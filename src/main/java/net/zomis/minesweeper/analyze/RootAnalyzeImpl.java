@@ -270,11 +270,6 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	}
 	
 	@Override
-	public String toString() {
-		return this.getRules().toString() + " original: " + this.getOriginalRules().toString();
-	}
-
-	@Override
 	public Iterable<Solution<Field>> getSolutionIteration() {
 		return this.solutions;
 	}

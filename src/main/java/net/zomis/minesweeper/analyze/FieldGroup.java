@@ -33,7 +33,6 @@ public class FieldGroup<Field> extends ArrayList<Field> {
 		if (this.size() > 8) {
 			if (this.probability == 0) 
 				return "(" + this.size() + " NO_MINES)";
-//			return "(" + this.size() + " DEEP SEA: " + this.probability + ")";
 			return "(" + this.size() + " DEEP SEA)";
 		}
 		
