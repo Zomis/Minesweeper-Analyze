@@ -8,7 +8,7 @@ public class FieldGroupSplit<T> {
 	private final FieldGroup<T>	both;
 	private final FieldGroup<T>	onlyB;
 
-	public FieldGroupSplit(FieldGroup<T> onlyA, FieldGroup<T> both, FieldGroup<T> onlyB) {
+	private FieldGroupSplit(FieldGroup<T> onlyA, FieldGroup<T> both, FieldGroup<T> onlyB) {
 		this.onlyA = onlyA;
 		this.onlyB = onlyB;
 		this.both = both;

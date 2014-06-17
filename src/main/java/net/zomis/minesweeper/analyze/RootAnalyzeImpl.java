@@ -11,18 +11,13 @@ import java.util.Random;
 import java.util.Set;
 
 public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
-	// IDEA: Iterator to loop through the possible solutions, without creating them -- saves memory but still wastes time
-	// IDEA: getProbabilityOf on a SolutionSet object, which returns a solutionSet. To nest the calls. analyze.getProbabilityOf(...).getProbabilityOf().getProbability().
-	//           this would require the solutionset to know the original combinations (double), not change it, and compare against the current combinations.
-	
-	// replace some of the lists in analyze code with LinkedLists. -- check speed compare.
+	private final List<FieldGroup<T>> groups = new ArrayList<FieldGroup<T>>();
+	private final List<FieldRule<T>> originalRules = new ArrayList<FieldRule<T>>();
 	private final List<FieldRule<T>> rules = new ArrayList<FieldRule<T>>();
 	private final List<Solution<T>> solutions = new ArrayList<Solution<T>>();
 	
-	private final List<FieldGroup<T>> groups = new ArrayList<FieldGroup<T>>();
 	private double total;
 	private boolean solved = false;
-	private final List<FieldRule<T>> originalRules = new ArrayList<FieldRule<T>>();
 	
 	@Override
 	public double getTotal() {
@@ -69,17 +64,22 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 	 */
 	@Override
 	public List<T> randomSolution(Random random) {
-		if (random == null)
+		if (random == null) {
 			throw new IllegalArgumentException("Random object cannot be null");
+		}
 		
 		List<Solution<T>> solutions = new LinkedList<Solution<T>>(this.solutions);
-		if (this.getTotal() == 0) throw new IllegalStateException("Analyze has 0 combinations: " + this);
+		if (this.getTotal() == 0) {
+			throw new IllegalStateException("Analyze has 0 combinations: " + this);
+		}
 		
 		double rand = random.nextDouble() * this.getTotal();
 		Solution<T> theSolution = null;
 		
 		while (rand > 0) {
-			if (solutions.isEmpty()) throw new IllegalStateException("Solutions is suddenly empty.");
+			if (solutions.isEmpty()) {
+				throw new IllegalStateException("Solutions is suddenly empty. (This should not happen)");
+			}
 			theSolution = solutions.get(0);
 			rand -= theSolution.nCr();
 			solutions.remove(0);
@@ -90,8 +90,10 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 	
 	private RootAnalyzeImpl<T> solutionToNewAnalyze(Solution<T> solution, List<FieldRule<T>> extraRules) {
 		Collection<FieldRule<T>> newRules = new ArrayList<FieldRule<T>>();
-		for (FieldRule<T> rule : extraRules) 
-			newRules.add(new FieldRule<T>(rule)); // Need to create new rules for each solution iteration, because the older ones has been simplified.
+		for (FieldRule<T> rule : extraRules) { 
+			// Create new rules, because the older ones may have been simplified already.
+			newRules.add(new FieldRule<T>(rule));
+		}
 		RootAnalyzeImpl<T> newRoot = new RootAnalyzeImpl<T>(solution);
 		newRoot.rules.addAll(newRules);
 		return newRoot;
@@ -155,11 +157,9 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 			return;
 			
 		boolean splitPerformed = true;
-		int splits = (int) Math.pow(rules.size(), 5);
 		while (splitPerformed) {
 			splitPerformed = false;
 			for (FieldRule<T> a : rules) {
-//				if (a.isIsolated()) continue; // TODO: Using this code can lead to infinite loop
 				for (FieldRule<T> b : rules) {
 					boolean result = a.checkIntersection(b);
 					
@@ -168,17 +168,14 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 					}
 				}
 			}
-			splits--;
-			if (splits == 0) {
-				throw new AssertionError("Infinite loop during splitting! Current rules: " + rules);
-			}
 		}
 	}
 	
 	
 	public void solve() {
-		if (this.solved)
+		if (this.solved) {
 			throw new IllegalStateException("Analyze has already been solved");
+		}
 		
 		List<FieldRule<T>> original = new ArrayList<FieldRule<T>>(this.rules.size());
 		for (FieldRule<T> rule : this.rules) {
@@ -205,21 +202,6 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 		this.solved = true;
 	}
 	
-	public static double nCr(int n, int r) {
-		if (r > n || r < 0)
-			return 0;
-		if (r == 0 || r == n)
-			return 1;
-		
-		double value = 1;
-		
-		for (int i = 0; i < r; i++) {
-			value = value * (n - i) / (r - i);
-		}
-		
-		return value;
-	}
-
 	@Override
 	public List<FieldGroup<T>> getGroups() {
 		if (!this.solved) {
@@ -233,15 +215,18 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 		List<FieldGroup<T>> grps = new ArrayList<FieldGroup<T>>(this.groups);
 		Iterator<FieldGroup<T>> it = grps.iterator();
 		while (it.hasNext()) {
-			if (it.next().isEmpty())
-				it.remove(); // remove empty fieldgroups
+			// remove empty fieldgroups
+			if (it.next().isEmpty()) {
+				it.remove(); 
+			}
 		}
 		return grps;
 	}
 	@Override
 	public List<T> getFields() {
-		if (!this.solved) 
+		if (!this.solved) { 
 			throw new IllegalStateException("Analyze is not solved");
+		}
 		
 		List<T> allFields = new ArrayList<T>();
 		for (FieldGroup<T> group : this.getGroups()) {
@@ -258,15 +243,14 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 
 	@Override
 	public List<T> getSolution(double solution) {
-		if (Math.rint(solution) != solution)
-			throw new IllegalArgumentException("solution must be an integer");
+		if (Math.rint(solution) != solution || solution < 0 || solution >= this.getTotal()) {
+			throw new IllegalArgumentException("solution must be an integer between 0 and total (" + this.getTotal() + ")");
+		}
+		if (solutions.isEmpty()) {
+			throw new IllegalStateException("There are no solutions.");
+		}
 		
-		if (solution < 0 || solution >= this.getTotal())
-			throw new IllegalArgumentException("solution must be between 0 and total (" + this.getTotal() + ")");
-		
-		List<Solution<T>> solutions = new LinkedList<Solution<T>>(this.solutions);
-		if (solutions.isEmpty())
-			throw new IllegalStateException("Solutions is empty.");
+		List<Solution<T>> solutions = new ArrayList<Solution<T>>(this.solutions);
 		Solution<T> theSolution = solutions.get(0);
 		while (solution > theSolution.nCr()) {
 			solution -= theSolution.nCr();

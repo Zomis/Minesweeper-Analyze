@@ -6,14 +6,39 @@ import java.util.List;
 
 public class GameAnalyze<T> {
 
-	private final List<FieldRule<T>> rules;
-	private final GroupValues<T> knownValues;
 	private final SolvedCallback<T> callback;
+	private final GroupValues<T> knownValues;
+	private final List<FieldRule<T>> rules;
 	
 	GameAnalyze(GroupValues<T> knownValues, List<FieldRule<T>> unsolvedRules, SolvedCallback<T> callback) {
 		this.knownValues = knownValues == null ? new GroupValues<T>() : new GroupValues<T>(knownValues);
 		this.rules = unsolvedRules;
 		this.callback = callback;
+	}
+	
+	private void removeEmptyRules() {
+		Iterator<FieldRule<T>> it = rules.iterator();
+		while (it.hasNext()) {
+			if (it.next().isEmpty())
+				it.remove();
+		}
+	}
+	
+	private boolean simplifyRules() {
+		boolean simplifyPerformed = true;
+		while (simplifyPerformed) {
+			simplifyPerformed = false;
+			for (FieldRule<T> ruleSimplify : rules) {
+				SimplifyResult simplifyResult = ruleSimplify.simplify(knownValues);
+				if (simplifyResult == SimplifyResult.SIMPLIFIED) {
+					simplifyPerformed = true;
+				}
+				else if (simplifyResult.isFailure()) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	void solve() {
@@ -23,18 +48,12 @@ public class GameAnalyze<T> {
 		if (!this.simplifyRules()) {
 			return;
 		}
+		
 		this.removeEmptyRules();
 		this.solveRules();
+		
 		if (this.rules.isEmpty()) {
-			this.addSolutions();
-		}
-	}
-	
-	private void removeEmptyRules() {
-		Iterator<FieldRule<T>> it = rules.iterator();
-		while (it.hasNext()) {
-			if (it.next().isEmpty())
-				it.remove();
+			callback.solved(Solution.createSolution(this.knownValues));
 		}
 	}
 	
@@ -58,34 +77,9 @@ public class GameAnalyze<T> {
 			for (FieldRule<T> rule : this.rules) {
 				rulesCopy.add(new FieldRule<T>(rule));
 			}
-			
-			if (rulesCopy.remove(chosenGroup))
-				System.out.println("remove has effect: "); // TODO: WTF!? This never has any effect.
-			
+
 			new GameAnalyze<T>(mapCopy, rulesCopy, this.callback).solve();
 		}
-	}
-	
-	private void addSolutions() {
-		if (this.callback != null) 
-			this.callback.solved(Solution.solutionFactory(this.knownValues));
-	}
-
-	private boolean simplifyRules() {
-		boolean simplifyPerformed = true;
-		while (simplifyPerformed) {
-			simplifyPerformed = false;
-			for (FieldRule<T> ruleSimplify : rules) {
-				SimplifyResult simplifyResult = ruleSimplify.simplify(knownValues);
-				if (simplifyResult == SimplifyResult.SIMPLIFIED) {
-					simplifyPerformed = true;
-				}
-				else if (simplifyResult.isFailure()) {
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 	
 }

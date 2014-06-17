@@ -121,7 +121,7 @@ public class FieldRule<T> {
 	public double nCr() {
 		if (this.fields.size() != 1)
 			throw new IllegalStateException("Rule has more than one group.");
-		return RootAnalyzeImpl.nCr(this.getFieldsCountInGroups(), this.result);
+		return Combinatorics.nCr(this.getFieldsCountInGroups(), this.result);
 	}
 
 	public SimplifyResult simplify(Map<FieldGroup<T>, Integer> knownValues) {

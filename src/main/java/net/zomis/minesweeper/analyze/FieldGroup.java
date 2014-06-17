@@ -9,23 +9,23 @@ public class FieldGroup<T> extends ArrayList<T> {
 	private double probability = 0;
 	private int solutionsKnown = 0;
 	
-	void informAboutSolution(int rValue, Solution<T> solution, double total) {
-		if (rValue == 0)
-			return;
-		this.probability = this.probability + solution.nCr() / total * rValue / this.size();
-		this.solutionsKnown++;
-	}
-	
-	public int getSolutionsKnown() {
-		return this.solutionsKnown;
+	public FieldGroup(Collection<T> fields) {
+		super(fields);
 	}
 	
 	public double getProbability() {
 		return this.probability;
 	}
+	
+	public int getSolutionsKnown() {
+		return this.solutionsKnown;
+	}
 
-	public FieldGroup(Collection<T> fields) {
-		super(fields);
+	void informAboutSolution(int rValue, Solution<T> solution, double total) {
+		if (rValue == 0)
+			return;
+		this.probability = this.probability + solution.nCr() / total * rValue / this.size();
+		this.solutionsKnown++;
 	}
 	
 	public String toString() {
