@@ -43,6 +43,9 @@ public class General2DAnalyze extends AbstractAnalyze<CharPoint> {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				char ch = map[y].charAt(x);
+				if (!isValidChar(ch)) {
+					throw new IllegalArgumentException("'" + ch + "' is not a valid character");
+				}
 				points[x][y] = new CharPoint(x, y, ch);
 				if (ch == HIDDEN_MINE) {
 					hiddenMines++;
@@ -53,6 +56,10 @@ public class General2DAnalyze extends AbstractAnalyze<CharPoint> {
 		this.hiddenMines = hiddenMines;
 		this.neighbors = neighbors;
 		this.createRules(getAllPoints());
+	}
+
+	private boolean isValidChar(char ch) {
+		return Character.isDigit(ch) || ch == BLOCKED || ch == HIDDEN_MINE || ch == KNOWN_MINE || isInArray(ch, UNCLICKED);
 	}
 
 	@Override

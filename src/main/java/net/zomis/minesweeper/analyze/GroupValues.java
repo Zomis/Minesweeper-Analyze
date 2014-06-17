@@ -2,10 +2,10 @@ package net.zomis.minesweeper.analyze;
 
 import java.util.HashMap;
 
-public class GroupValues<Field> extends HashMap<FieldGroup<Field>, Integer> {
+public class GroupValues<T> extends HashMap<FieldGroup<T>, Integer> {
 	// TODO: Override hashcode and equals so that it is possible to buffer NnK values
 	
-	public GroupValues(GroupValues<Field> values) {
+	public GroupValues(GroupValues<T> values) {
 		super(values);
 	}
 

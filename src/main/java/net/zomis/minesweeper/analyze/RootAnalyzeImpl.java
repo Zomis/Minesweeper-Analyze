@@ -10,33 +10,33 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
-public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyze<Field> {
+public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 	// IDEA: Iterator to loop through the possible solutions, without creating them -- saves memory but still wastes time
 	// IDEA: getProbabilityOf on a SolutionSet object, which returns a solutionSet. To nest the calls. analyze.getProbabilityOf(...).getProbabilityOf().getProbability().
 	//           this would require the solutionset to know the original combinations (double), not change it, and compare against the current combinations.
 	
 	// replace some of the lists in analyze code with LinkedLists. -- check speed compare.
-	private final List<FieldRule<Field>> rules = new ArrayList<FieldRule<Field>>();
-	private final List<Solution<Field>> solutions = new ArrayList<Solution<Field>>();
+	private final List<FieldRule<T>> rules = new ArrayList<FieldRule<T>>();
+	private final List<Solution<T>> solutions = new ArrayList<Solution<T>>();
 	
-	private final List<FieldGroup<Field>> groups = new ArrayList<FieldGroup<Field>>();
+	private final List<FieldGroup<T>> groups = new ArrayList<FieldGroup<T>>();
 	private double total;
 	private boolean solved = false;
-	private final List<FieldRule<Field>> originalRules = new ArrayList<FieldRule<Field>>();
+	private final List<FieldRule<T>> originalRules = new ArrayList<FieldRule<T>>();
 	
 	@Override
 	public double getTotal() {
 		return this.total;
 	}
 	
-	private RootAnalyzeImpl(Solution<Field> known) {
-		for (Entry<FieldGroup<Field>, Integer> sol : known.getSetGroupValues().entrySet()) {
-			this.rules.add(new FieldRule<Field>(null, sol.getKey(), sol.getValue()));
+	private RootAnalyzeImpl(Solution<T> known) {
+		for (Entry<FieldGroup<T>, Integer> sol : known.getSetGroupValues().entrySet()) {
+			this.rules.add(new FieldRule<T>(null, sol.getKey(), sol.getValue()));
 		}
 	}
 	public RootAnalyzeImpl() {}
 	
-	public void addRule(FieldRule<Field> rule) {
+	public void addRule(FieldRule<T> rule) {
 		this.rules.add(rule);
 	}
 	
@@ -46,13 +46,13 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	 * @return List of simplified rules
 	 */
 	@Override
-	public List<FieldRule<Field>> getRules() {
-		return new ArrayList<FieldRule<Field>>(this.rules);
+	public List<FieldRule<T>> getRules() {
+		return new ArrayList<FieldRule<T>>(this.rules);
 	}
 	
 	@Override
-	public FieldGroup<Field> getGroupFor(Field field) {
-		for (FieldGroup<Field> group : this.groups) {
+	public FieldGroup<T> getGroupFor(T field) {
+		for (FieldGroup<T> group : this.groups) {
 			if (group.contains(field)) {
 				return group;
 			}
@@ -68,15 +68,15 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	 * 
 	 */
 	@Override
-	public List<Field> randomSolution(Random random) {
+	public List<T> randomSolution(Random random) {
 		if (random == null)
 			throw new IllegalArgumentException("Random object cannot be null");
 		
-		List<Solution<Field>> solutions = new LinkedList<Solution<Field>>(this.solutions);
+		List<Solution<T>> solutions = new LinkedList<Solution<T>>(this.solutions);
 		if (this.getTotal() == 0) throw new IllegalStateException("Analyze has 0 combinations: " + this);
 		
 		double rand = random.nextDouble() * this.getTotal();
-		Solution<Field> theSolution = null;
+		Solution<T> theSolution = null;
 		
 		while (rand > 0) {
 			if (solutions.isEmpty()) throw new IllegalStateException("Solutions is suddenly empty.");
@@ -88,22 +88,22 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 		return theSolution.getRandomSolution(random);
 	}
 	
-	private RootAnalyzeImpl<Field> solutionToNewAnalyze(Solution<Field> solution, List<FieldRule<Field>> extraRules) {
-		Collection<FieldRule<Field>> newRules = new ArrayList<FieldRule<Field>>();
-		for (FieldRule<Field> rule : extraRules) 
-			newRules.add(new FieldRule<Field>(rule)); // Need to create new rules for each solution iteration, because the older ones has been simplified.
-		RootAnalyzeImpl<Field> newRoot = new RootAnalyzeImpl<Field>(solution);
+	private RootAnalyzeImpl<T> solutionToNewAnalyze(Solution<T> solution, List<FieldRule<T>> extraRules) {
+		Collection<FieldRule<T>> newRules = new ArrayList<FieldRule<T>>();
+		for (FieldRule<T> rule : extraRules) 
+			newRules.add(new FieldRule<T>(rule)); // Need to create new rules for each solution iteration, because the older ones has been simplified.
+		RootAnalyzeImpl<T> newRoot = new RootAnalyzeImpl<T>(solution);
 		newRoot.rules.addAll(newRules);
 		return newRoot;
 	}
 	
 	@Override
-	public RootAnalyze<Field> cloneAddSolve(List<FieldRule<Field>> extraRules) {
-		List<FieldRule<Field>> newRules = this.getOriginalRules();
+	public RootAnalyze<T> cloneAddSolve(List<FieldRule<T>> extraRules) {
+		List<FieldRule<T>> newRules = this.getOriginalRules();
 		newRules.addAll(extraRules);
-		RootAnalyzeImpl<Field> copy = new RootAnalyzeImpl<Field>();
-		for (FieldRule<Field> rule : newRules) {
-			copy.addRule(new FieldRule<Field>(rule));
+		RootAnalyzeImpl<T> copy = new RootAnalyzeImpl<T>();
+		for (FieldRule<T> rule : newRules) {
+			copy.addRule(new FieldRule<T>(rule));
 		}
 		copy.solve();
 		return copy;
@@ -115,17 +115,17 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	 * @return The original rule list  
 	 */
 	@Override
-	public List<FieldRule<Field>> getOriginalRules() {
-		return this.originalRules.isEmpty() ? this.getRules() : new ArrayList<FieldRule<Field>>(this.originalRules);
+	public List<FieldRule<T>> getOriginalRules() {
+		return this.originalRules.isEmpty() ? this.getRules() : new ArrayList<FieldRule<T>>(this.originalRules);
 	}
 
-	private double getTotalWith(List<FieldRule<Field>> extraRules) {
+	private double getTotalWith(List<FieldRule<T>> extraRules) {
 		if (!this.solved)
 			throw new IllegalStateException("Analyze is not solved");
 		double total = 0;
 		
-		for (Solution<Field> solution : this.getSolutions()) {
-			RootAnalyzeImpl<Field> root = this.solutionToNewAnalyze(solution, extraRules);
+		for (Solution<T> solution : this.getSolutions()) {
+			RootAnalyzeImpl<T> root = this.solutionToNewAnalyze(solution, extraRules);
 			root.solve();
 			total += root.getTotal();
 		}
@@ -134,31 +134,36 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	}
 	
 	@Override
-	public double getProbabilityOf(List<FieldRule<Field>> extraRules) {
+	public double getProbabilityOf(List<FieldRule<T>> extraRules) {
+		if (!this.solved)
+			throw new IllegalStateException("Analyze is not solved");
 		return this.getTotalWith(extraRules) / this.getTotal();
 	}
 	
 	@Override
-	public Collection<Solution<Field>> getSolutions() {
+	public List<Solution<T>> getSolutions() {
 		if (!this.solved)
 			throw new IllegalStateException("Analyze is not solved");
-		return new ArrayList<Solution<Field>>(this.solutions);
+		return new ArrayList<Solution<T>>(this.solutions);
 	}
 
 	/**
 	 * Separate fields into field groups. Example <code>a + b + c = 2</code> and <code>b + c + d = 1</code> becomes <code>(a) + (b + c) = 2</code> and <code>(b + c) + (d) = 1</code>. This method is called automatically when calling {@link #solve()}
 	 */
 	public void splitFieldRules() {
+		if (rules.size() <= 1)
+			return;
+			
 		boolean splitPerformed = true;
 		int splits = (int) Math.pow(rules.size(), 5);
 		while (splitPerformed) {
 			splitPerformed = false;
-			for (FieldRule<Field> a : rules) {
+			for (FieldRule<T> a : rules) {
 //				if (a.isIsolated()) continue; // TODO: Using this code can lead to infinite loop
-				for (FieldRule<Field> b : rules) {
-					List<FieldGroup<Field>> result = a.checkIntersection(b);
+				for (FieldRule<T> b : rules) {
+					boolean result = a.checkIntersection(b);
 					
-					if (result != null) {
+					if (result) {
 						splitPerformed = true;
 					}
 				}
@@ -175,9 +180,9 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 		if (this.solved)
 			throw new IllegalStateException("Analyze has already been solved");
 		
-		List<FieldRule<Field>> original = new ArrayList<FieldRule<Field>>(this.rules.size());
-		for (FieldRule<Field> rule : this.rules) {
-			original.add(new FieldRule<Field>(rule));
+		List<FieldRule<T>> original = new ArrayList<FieldRule<T>>(this.rules.size());
+		for (FieldRule<T> rule : this.rules) {
+			original.add(new FieldRule<T>(rule));
 		}
 		this.originalRules.addAll(original);
 		
@@ -185,14 +190,14 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 		
 		this.total = 0;
 		
-		new GameAnalyze<Field>(null, rules, this).solve();
+		new GameAnalyze<T>(null, rules, this).solve();
 		
-		for (Solution<Field> solution : this.solutions) {
+		for (Solution<T> solution : this.solutions) {
 			solution.setTotal(total);
 		}
 		
 		if (!this.solutions.isEmpty()) {
-			for (FieldGroup<Field> group : this.solutions.get(0).getSetGroupValues().keySet()) {
+			for (FieldGroup<T> group : this.solutions.get(0).getSetGroupValues().keySet()) {
 				// All solutions should contain the same fieldgroups.
 				groups.add(group);
 			}
@@ -216,52 +221,53 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	}
 
 	@Override
-	public List<FieldGroup<Field>> getGroups() {
+	public List<FieldGroup<T>> getGroups() {
 		if (!this.solved) {
-			Set<FieldGroup<Field>> agroups = new HashSet<FieldGroup<Field>>();
-			for (FieldRule<Field> rule : this.getRules()) {
+			Set<FieldGroup<T>> agroups = new HashSet<FieldGroup<T>>();
+			for (FieldRule<T> rule : this.getRules()) {
 				agroups.addAll(rule.getFieldGroups());
 			}
-			return new ArrayList<FieldGroup<Field>>(agroups);
+			return new ArrayList<FieldGroup<T>>(agroups);
 		}
 		
-		List<FieldGroup<Field>> grps = new ArrayList<FieldGroup<Field>>(this.groups);
-		Iterator<FieldGroup<Field>> it = grps.iterator();
+		List<FieldGroup<T>> grps = new ArrayList<FieldGroup<T>>(this.groups);
+		Iterator<FieldGroup<T>> it = grps.iterator();
 		while (it.hasNext()) {
-			if (it.next().isEmpty()) it.remove(); // remove empty fieldgroups
+			if (it.next().isEmpty())
+				it.remove(); // remove empty fieldgroups
 		}
 		return grps;
 	}
 	@Override
-	public List<Field> getFields() {
+	public List<T> getFields() {
 		if (!this.solved) 
 			throw new IllegalStateException("Analyze is not solved");
 		
-		List<Field> allFields = new ArrayList<Field>();
-		for (FieldGroup<Field> group : this.getGroups()) {
+		List<T> allFields = new ArrayList<T>();
+		for (FieldGroup<T> group : this.getGroups()) {
 			allFields.addAll(group);
 		}
 		return allFields;
 	}
 
 	@Override
-	public void solved(Solution<Field> solved) {
+	public void solved(Solution<T> solved) {
 		this.solutions.add(solved);
 		this.total += solved.nCr();
 	}
 
 	@Override
-	public List<Field> getSolution(double solution) {
+	public List<T> getSolution(double solution) {
 		if (Math.rint(solution) != solution)
 			throw new IllegalArgumentException("solution must be an integer");
 		
 		if (solution < 0 || solution >= this.getTotal())
 			throw new IllegalArgumentException("solution must be between 0 and total (" + this.getTotal() + ")");
 		
-		List<Solution<Field>> solutions = new LinkedList<Solution<Field>>(this.solutions);
+		List<Solution<T>> solutions = new LinkedList<Solution<T>>(this.solutions);
 		if (solutions.isEmpty())
 			throw new IllegalStateException("Solutions is empty.");
-		Solution<Field> theSolution = solutions.get(0);
+		Solution<T> theSolution = solutions.get(0);
 		while (solution > theSolution.nCr()) {
 			solution -= theSolution.nCr();
 			solutions.remove(0);
@@ -271,7 +277,7 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	}
 	
 	@Override
-	public Iterable<Solution<Field>> getSolutionIteration() {
+	public Iterable<Solution<T>> getSolutionIteration() {
 		return this.solutions;
 	}
 }

@@ -1,35 +1,34 @@
 package net.zomis.minesweeper.analyze;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-public interface RootAnalyze<Field> {
+public interface RootAnalyze<T> {
 	/**
 	 * Get the total number of combinations of Field placements.
 	 * @return The number of combinations for the analyze. 0 if the analyze is impossible.
 	 */
 	double getTotal();
 
-	List<Field> getFields();
+	List<T> getFields();
 
-	List<FieldRule<Field>> getRules();
+	List<FieldRule<T>> getRules();
 
-	FieldGroup<Field> getGroupFor(Field field);
+	FieldGroup<T> getGroupFor(T field);
 
-	List<Field> randomSolution(Random random);
+	List<T> randomSolution(Random random);
 	
-	List<Field> getSolution(double solution);
-	Iterable<Solution<Field>> getSolutionIteration();
+	List<T> getSolution(double solution);
+	Iterable<Solution<T>> getSolutionIteration();
 	
-	List<FieldRule<Field>> getOriginalRules();
+	List<FieldRule<T>> getOriginalRules();
 
-	double getProbabilityOf(List<FieldRule<Field>> extraRules);
+	double getProbabilityOf(List<FieldRule<T>> extraRules);
 
-	Collection<Solution<Field>> getSolutions();
+	List<Solution<T>> getSolutions();
 
-	List<FieldGroup<Field>> getGroups();
+	List<FieldGroup<T>> getGroups();
 
-	RootAnalyze<Field> cloneAddSolve(List<FieldRule<Field>> extraRules);
+	RootAnalyze<T> cloneAddSolve(List<FieldRule<T>> extraRules);
 
 }

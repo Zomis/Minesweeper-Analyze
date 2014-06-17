@@ -27,7 +27,7 @@ public abstract class AbstractAnalyze<F> extends RootAnalyzeImpl<F> {
 				continue;
 
 			FieldRule<F> newRule = internalRuleFromField(field, knownNonMines);
-			if (newRule != null && !newRule.isEmpty()) {
+			if (newRule != null) {
 				this.addRule(newRule);
 			}
 		}

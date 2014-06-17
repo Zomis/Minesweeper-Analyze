@@ -8,6 +8,7 @@ import org.junit.Test;
 
 public class General2DTest {
 	
+	
 	@Test
 	public void simpleMap() {
 		String[] input = {
@@ -19,14 +20,10 @@ public class General2DTest {
 		General2DAnalyze analyze = new General2DAnalyze(input);
 		analyze.solve();
 		
-		for (FieldRule<CharPoint> ee : analyze.getRules()) {
-			System.out.println(ee);
-		}
-		for (Solution<CharPoint> ee : analyze.getSolutions()) {
-			System.out.println(ee);
-		}
+		FieldGroup<CharPoint> grp = analyze.getGroupFor(analyze.getPoint(0, 0));
+		assertEquals(analyze.getSolutions().size(), grp.getSolutionsKnown() + 1); // Group is set to zero in one solution
 		
-		
+		assertEquals(16 - 2, analyze.getFields().size());
 		assertEquals(3*6 + 4*3*4, analyze.getTotal(), 0.000001);
 	}
 

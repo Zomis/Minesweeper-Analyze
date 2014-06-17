@@ -2,10 +2,10 @@ package net.zomis.minesweeper.analyze;
 
 public enum SimplifyResult {
 
-	FAILED_NEGATIVE_RESULT(-1), FAILED_TOO_BIG_RESULT(-2), NO_EFFECT(0), SIMPLIFIED(1);
+	FAILED_NEGATIVE_RESULT, FAILED_TOO_BIG_RESULT, NO_EFFECT, SIMPLIFIED;
 	
-	private SimplifyResult(int i) {
-		
+	public boolean isFailure() {
+		return this == FAILED_NEGATIVE_RESULT || this == FAILED_TOO_BIG_RESULT;
 	}
 	
 }

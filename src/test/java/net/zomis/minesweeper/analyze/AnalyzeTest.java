@@ -15,6 +15,17 @@ public class AnalyzeTest {
 	private static final double	EPSILON	= 0.000000001;
 
 	@Test
+	public void ruleTest() {
+		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
+		FieldRule<String> ruleA = new FieldRule<String>("A", Arrays.asList("a", "b", "c", "d"), 4);
+		assertEquals("(a + b + c + d) = 4", ruleA.toString());
+		assertEquals("A", ruleA.getCause());
+		root.addRule(ruleA);
+		root.addRule(new FieldRule<String>("B", Arrays.asList("c", "d", "e", "f"), 2));
+		root.solve();
+	}
+	
+	@Test
 	public void aWholeLotOfConnectedThreesComplexMap() {
 		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
 		List<String> openSea = addBoard(16, 16);
@@ -43,7 +54,10 @@ public class AnalyzeTest {
 		root.addRule(placeThreeAt(13, 13, openSea));
 		
 		assertEquals(256 - 17, openSea.size());
-		root.addRule(new FieldRule<String>("global", openSea, 51));
+		FieldRule<String> globalRule = new FieldRule<String>("global", openSea, 51);
+		root.addRule(globalRule);
+		
+		assertEquals(51, globalRule.getResult());
 		
 		long time = System.nanoTime();
 		root.solve();
@@ -62,6 +76,9 @@ public class AnalyzeTest {
 		assertEquals(0.08875309776194928, root.getGroupFor("ff").getProbability(), EPSILON);
 		assertEquals(0.2707636258317718 , root.getGroupFor("23").getProbability(), EPSILON);
 		assertEquals(0.26833148025906883, root.getGroupFor("80").getProbability(), EPSILON);
+		assertEquals(51, globalRule.getResult());
+		assertEquals(openSea.size(), globalRule.getFieldsCountInGroups());
+		assertEquals(1, globalRule.getSmallestFieldGroup().size());
 		long timeElapsedNanos = timeEnd - time;
 		System.out.println("Solve took " + timeElapsedNanos / 1000000.0);
 	}

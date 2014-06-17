@@ -41,10 +41,6 @@ public class Solution<T> {
 		return this.nCrValue;
 	}
 	
-	public double getProbability(double nCrTotal) {
-		return this.nCr() / nCrTotal;
-	}
-
 	public GroupValues<T> getSetGroupValues() {
 		return new GroupValues<T>(setGroupValues);
 	}
@@ -62,14 +58,20 @@ public class Solution<T> {
 		for (Entry<FieldGroup<T>, Integer> ee : this.setGroupValues.entrySet()) {
 			str.append(ee.getKey() + " = " + ee.getValue() + ", ");
 		}
-		str.append(this.nCrValue + " combinations (" + this.getChance() + ")");
+		str.append(this.nCrValue + " combinations (" + this.getProbability() + ")");
 		return str.toString();
 	}
 
-	public double getChance() {
-		if (this.mapTotal == 0) return -1;
+	public double getProbability() {
+		if (this.mapTotal == 0)
+			throw new IllegalStateException("The total number of solutions on map is unknown");
 		return this.nCrValue / this.mapTotal;
 	}
+	
+	public double getCombinations() {
+		return this.nCrValue;
+	}
+	
 	public List<T> getRandomSolution(Random random) {
 		List<T> result = new ArrayList<T>();
 		
@@ -156,9 +158,12 @@ public class Solution<T> {
 		rules = new LinkedList<FieldRule<Field>>(rules);
 		FieldRule<Field> first = rules.remove(0);
 		double remaining = 1;
-		for (FieldRule<Field> fr : rules) remaining = remaining * fr.nCr();
+		for (FieldRule<Field> fr : rules) {
+			remaining = remaining * fr.nCr();
+		}
 		
-		if (combinationNumber >= remaining * first.nCr()) return null;// throw new IllegalArgumentException("Not enough combinations. " + combinationNumber + " max is " + (remaining*first.nCr()));
+		if (combinationNumber >= remaining * first.nCr()) 
+			return null;// throw new IllegalArgumentException("Not enough combinations. " + combinationNumber + " max is " + (remaining*first.nCr()));
 		
 		double combo = combinationNumber % first.nCr();
 		List<Field> list = ncrcomb(combo, first.getResult(), first.getFieldGroups().iterator().next());
