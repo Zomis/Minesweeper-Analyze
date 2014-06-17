@@ -52,9 +52,10 @@ public class RootAnalyzeImpl<Field> implements SolvedCallback<Field>, RootAnalyz
 	
 	@Override
 	public FieldGroup<Field> getGroupFor(Field field) {
-		for (FieldGroup<Field> group : this.groups)
-		if (group.contains(field)) {
-			return group;
+		for (FieldGroup<Field> group : this.groups) {
+			if (group.contains(field)) {
+				return group;
+			}
 		}
 		return null;
 	}

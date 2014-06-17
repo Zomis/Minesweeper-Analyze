@@ -6,9 +6,10 @@ import java.util.List;
 
 public class General2DAnalyze extends AbstractAnalyze<CharPoint> {
 
-	public static final char UNCLICKED = '_';
+	public static final char[] UNCLICKED = { '_', '?' };
 	public static final char HIDDEN_MINE = 'x';
 	public static final char KNOWN_MINE = '!';
+	public static final char BLOCKED = '#';
 	
 	
 	private static final int[][]	DEFAULT_NEIGHBORS	= new int[][]{
@@ -67,7 +68,11 @@ public class General2DAnalyze extends AbstractAnalyze<CharPoint> {
 
 	@Override
 	protected boolean fieldHasRule(CharPoint field) {
-		return isClicked(field) && !isDiscoveredMine(field);
+		return !isBlocked(field) && isClicked(field) && !isDiscoveredMine(field);
+	}
+
+	private boolean isBlocked(CharPoint field) {
+		return field.getValue() == BLOCKED;
 	}
 
 	@Override
@@ -119,7 +124,21 @@ public class General2DAnalyze extends AbstractAnalyze<CharPoint> {
 
 	@Override
 	protected boolean isClicked(CharPoint neighbor) {
-		return neighbor.getValue() != UNCLICKED && neighbor.getValue() != HIDDEN_MINE;
+		if (isBlocked(neighbor))
+			return true;
+		return !isUnclickedChar(neighbor.getValue()) && neighbor.getValue() != HIDDEN_MINE;
+	}
+
+	private boolean isUnclickedChar(char value) {
+		return isInArray(value, UNCLICKED);
+	}
+
+	private boolean isInArray(char value, char[] array) {
+		for (char ch : array) {
+			if (ch == value)
+				return true;
+		}
+		return false;
 	}
 
 	public CharPoint getPoint(int x, int y) {

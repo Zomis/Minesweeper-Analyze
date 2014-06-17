@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class AnalyzeTest { // implements NeighborFind<String> {
+public class AnalyzeTest {
 
 	private static final double	EPSILON	= 0.000000001;
 
@@ -193,19 +193,26 @@ public class AnalyzeTest { // implements NeighborFind<String> {
 	}
 	
 	@Test
-	public void equals() {
-		RootAnalyzeImpl<String> analyze = new RootAnalyzeImpl<String>();
-		analyze.addRule(new FieldRule<String>("sea", fields("ab"), 1));
-		analyze.addRule(new FieldRule<String>("sea", Arrays.asList(new String("a"), "c"), 1));
-		analyze.solve();
+	public void createFieldRuleUsingFieldsString() {
+		FieldRule<String> rule = new FieldRule<String>("global", fields("abc"), 1);
+		assertEquals(1, rule.getFieldGroups().size());
+		assertEquals(3, rule.getSmallestFieldGroup().size());
+		assertTrue(rule.getSmallestFieldGroup().contains("a"));
+		assertTrue(rule.getSmallestFieldGroup().contains("b"));
+		assertTrue(rule.getSmallestFieldGroup().contains("c"));
+	}
+	
+	@Test
+	public void rulesFromString() {
+		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
+		FieldRule<String> rule = new FieldRule<String>("global", fields("abc"), 1);
+		root.addRule(rule);
+		root.addRule(createRule("(b + c) = 1"));
+		root.solve();
 		
-		System.out.println("---------");
-		for (FieldRule<String> grp : analyze.getOriginalRules())
-			System.out.println("Rule: " + grp);
-		for (FieldGroup<String> grp : analyze.getGroups())
-			System.out.println(grp + " = " + grp.getProbability());
-		System.out.println("---------");
-		
+		assertEquals(0, root.getGroupFor("a").getProbability(), EPSILON);
+		assertEquals(0.5, root.getGroupFor("b").getProbability(), EPSILON);
+		assertEquals(root.getGroupFor("b"), root.getGroupFor("c"));
 	}
 	
 	private Collection<String> fields(String string) {
@@ -216,16 +223,15 @@ public class AnalyzeTest { // implements NeighborFind<String> {
 		return str;
 	}
 
-	private void createRule(RootAnalyzeImpl<String> root, String string) {
+	private FieldRule<String> createRule(String string) {
 		String[] equalSplit = string.split(" = ");
 		String ruleFields = equalSplit[0];
 		ruleFields = ruleFields.substring(1, ruleFields.length() - 1);
 		int ruleValue = Integer.parseInt(equalSplit[1]);
-		String[] fields = ruleFields.split(" + ");
-		FieldRule<String> rule = new FieldRule<String>("RuleStr", Arrays.asList(fields), ruleValue);
-		root.addRule(rule);
-		System.out.println(rule);
+		String[] fields = ruleFields.split(" \\+ ");
+		FieldRule<String> rule = new FieldRule<String>("ruleString " + string, Arrays.asList(fields), ruleValue);
 		assertEquals(string, rule.toString());
+		return rule;
 	}
 	
 }

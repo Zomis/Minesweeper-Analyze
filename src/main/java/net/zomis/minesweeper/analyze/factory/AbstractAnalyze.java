@@ -17,7 +17,10 @@ public abstract class AbstractAnalyze<F> extends RootAnalyzeImpl<F> {
 	
 	protected final void createRules(List<F> points) {
 		Set<F> knownNonMines = new HashSet<F>();
-		this.addRule(new FieldRule<F>(null, getAllUnclickedFields(), getRemainingMinesCount()));
+		int remaining = getRemainingMinesCount();
+		if (remaining != -1) {
+			this.addRule(new FieldRule<F>(null, getAllUnclickedFields(), remaining));
+		}
 		
 		for (F field : points) {
 			if (!fieldHasRule(field))
