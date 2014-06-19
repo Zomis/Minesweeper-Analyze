@@ -1,1 +1,10 @@
 /target
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+*.jar
+*.war
+*.ear
+hs_err_pid*
