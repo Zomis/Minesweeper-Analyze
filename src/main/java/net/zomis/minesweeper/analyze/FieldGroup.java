@@ -3,6 +3,12 @@ package net.zomis.minesweeper.analyze;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * A group of fields that have common rules
+ * 
+ * @author Simon Forsberg
+ * @param <T> The field type
+ */
 public class FieldGroup<T> extends ArrayList<T> {
 	private static final long serialVersionUID = 4172065050118874050L;
 	

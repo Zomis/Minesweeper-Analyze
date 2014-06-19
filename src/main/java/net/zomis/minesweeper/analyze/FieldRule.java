@@ -6,6 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A constraint of a number of fields or {@link FieldGroup}s that should have a specific sum
+ * 
+ * @author Simon Forsberg
+ * @param <T> Field type
+ */
 public class FieldRule<T> {
 	
 	private final T cause;

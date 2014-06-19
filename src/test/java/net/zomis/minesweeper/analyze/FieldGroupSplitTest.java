@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-public class FieldGroupTest {
+public class FieldGroupSplitTest {
 
 	@Test
 	public void split() {
@@ -17,9 +17,6 @@ public class FieldGroupTest {
 		assertEquals(2, split.getBoth().size());
 		assertEquals(1, split.getOnlyB().size());
 		assertTrue(split.splitPerformed());
-		
-		assertEquals(0, 0);
-		
 	}
 	
 }

@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
+/**
+ * Represents a solution for a Minesweeper analyze. This has the {@link FieldGroup}s 
+ * 
+ * @author Simon Forsberg
+ * @param <T>
+ */
 public class Solution<T> {
 	public static <T> Solution<T> createSolution(GroupValues<T> values) {
 		return new Solution<T>(values).nCrPerform();
@@ -46,7 +52,7 @@ public class Solution<T> {
 		}
 		
 		double combo = combination % fncr;
-		List<T> list = Combinatorics.ncrcomb(combo, first.getValue(), first.getKey());
+		List<T> list = Combinatorics.listCombination(combo, first.getValue(), first.getKey());
 		if (!grpValues.isEmpty()) {
 			List<T> recursive = combination(grpValues, Math.floor(combination / fncr));
 			if (recursive == null) {

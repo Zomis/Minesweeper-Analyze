@@ -1,6 +1,6 @@
 package net.zomis.minesweeper.analyze;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,40 +11,43 @@ import java.util.List;
 public class Combinatorics {
 	private Combinatorics() { }
 	
-	public static <T> List<T> ncrcomb(double combination, int size, List<T> elementList) {
+	public static <T> List<T> listCombination(double combination, int size, List<T> elementList) {
 		if (Math.rint(combination) != combination) {
 			throw new IllegalArgumentException("x is not an integer " + combination);
 		}
 		
-		List<Integer> a = ncrcombo2(combination, size, elementList.size());
+		List<Integer> a = indexCombinations(combination, size, elementList.size());
 		if (a == null) {
 			return null;
 		}
 		
-		List<T> b = new LinkedList<T>();
+		List<T> b = new ArrayList<T>(a.size());
 		for (Integer i : a) {
-			b.add(elementList.get(i));
+			b.add(elementList.get((int) i));
 		}
 		return b;
 	}
 	
-	public static <T> List<T> ncrCombo(List<FieldRule<T>> rules, double combinationNumber) {
-		if (rules.isEmpty()) return new LinkedList<T>();
+	public static <T> List<T> multiListCombination(List<FieldRule<T>> rules, double combinationNumber) {
+		if (rules.isEmpty()) { 
+			return new ArrayList<T>();
+		}
 		
-		rules = new LinkedList<FieldRule<T>>(rules);
+		rules = new ArrayList<FieldRule<T>>(rules);
 		FieldRule<T> first = rules.remove(0);
 		double remaining = 1;
 		for (FieldRule<T> fr : rules) {
 			remaining = remaining * fr.nCr();
 		}
 		
-		if (combinationNumber >= remaining * first.nCr()) 
-			return null;// throw new IllegalArgumentException("Not enough combinations. " + combinationNumber + " max is " + (remaining*first.nCr()));
+		if (combinationNumber >= remaining * first.nCr()) { 
+			throw new IllegalArgumentException("Not enough combinations. " + combinationNumber + " max is " + (remaining*first.nCr()));
+		}
 		
 		double combo = combinationNumber % first.nCr();
-		List<T> list = ncrcomb(combo, first.getResult(), first.getFieldGroups().iterator().next());
+		List<T> list = listCombination(combo, first.getResult(), first.getFieldGroups().iterator().next());
 		if (!rules.isEmpty()) {
-			List<T> recursive = ncrCombo(rules, Math.floor(combinationNumber / first.nCr()));
+			List<T> recursive = multiListCombination(rules, Math.floor(combinationNumber / first.nCr()));
 			if (recursive == null) {
 				return null;
 			}
@@ -54,26 +57,26 @@ public class Combinatorics {
 		return list;
 	}
 	
-	public static List<Integer> ncrcombo2(double x, int size, int elements){
-		if ((size < 0) || (size > elements)) {
+	public static List<Integer> indexCombinations(double x, int size, int elements) {
+		if (size < 0 || size > elements) {
 			return null;
 		}
 		if (size == 0) {
-			return x == 0 ? new LinkedList<Integer>() : null;
+			return x == 0 ? new ArrayList<Integer>(size) : null;
 		}
 		
 		if (size == elements) {
-			List<Integer> a = new LinkedList<Integer>();
+			List<Integer> a = new ArrayList<Integer>(size);
 			for (int i = 0; i < elements; i++) {
 				a.add(i);
 			}
 			return a;
 		}
 		if (x < nCr(elements - 1, size)) {
-			return ncrcombo2(x, size, elements - 1);
+			return indexCombinations(x, size, elements - 1);
 		}
 		
-		List<Integer> o = ncrcombo2(x - nCr(elements - 1, size), size - 1, elements - 1);
+		List<Integer> o = indexCombinations(x - nCr(elements - 1, size), size - 1, elements - 1);
 		if (o != null) {
 			o.add(elements - 1);
 		}
