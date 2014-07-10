@@ -12,10 +12,6 @@ import net.zomis.minesweeper.analyze.RootAnalyze;
 import net.zomis.minesweeper.analyze.Solution;
 
 public class DetailAnalyze<Field> implements IFieldProxyProvider<Field> {
-	public static interface NeighborFind<Field> {
-		Collection<Field> getNeighborsFor(Field field);
-		boolean isFoundAndisMine(Field field);
-	}
 	private final List<FieldGroup<Field>>	groups;
 	private final Map<Field, FieldProxy<Field>> proxies;
 	private final RootAnalyze<Field>	analyze;

@@ -9,31 +9,32 @@ import net.zomis.minesweeper.analyze.FieldGroup;
 import net.zomis.minesweeper.analyze.GroupValues;
 import net.zomis.minesweeper.analyze.RuntimeTimeoutException;
 import net.zomis.minesweeper.analyze.Solution;
-import net.zomis.minesweeper.analyze.detail.DetailAnalyze.NeighborFind;
 
-public class FieldProxy<Field> implements ProbabilityKnowledge<Field> {
-	private GroupValues<Field> neighbors;
-	private FieldGroup<Field> group;
-	private Field field;
+public class FieldProxy<T> implements ProbabilityKnowledge<T> {
+	private GroupValues<T> neighbors;
+	private FieldGroup<T> group;
+	private T field;
 	private double[] detailedCombinations;
 	private double[] detailedProbabilities;
 	private int	found;
+	
 	@Override
 	public int getFound() {
 		return this.found;
 	}
+	
 	@Override
 	public double getMineProbability() {
 		return this.group.getProbability();
 	}
 	
 	@Override
-	public Field getField() {
+	public T getField() {
 		return this.field;
 	}
 	
 	@Override
-	public GroupValues<Field> getNeighbors() {
+	public GroupValues<T> getNeighbors() {
 		return this.neighbors;
 	}
 	
@@ -48,31 +49,30 @@ public class FieldProxy<Field> implements ProbabilityKnowledge<Field> {
 				+ "\n neighbors: " + this.neighbors.toString()
 				+ "\n group: " + this.group.toString()
 				+ "\n Mine prob " + this.group.getProbability() + " Numbers: " + Arrays.toString(this.detailedProbabilities)
-//				+"\n detailed: " + Arrays.toString(this.detailedCombinations)
 				;
 	}
 	
-	FieldProxy(FieldGroup<Field> group, Field field) {
+	FieldProxy(FieldGroup<T> group, T field) {
 		this.field = field;
-		this.neighbors = new GroupValues<Field>();
+		this.neighbors = new GroupValues<T>();
 		this.group = group;
 		this.found = 0;
 		
 	}
 	
-	void fixNeighbors(NeighborFind<Field> neighborStrategy, IFieldProxyProvider<Field> proxyProvider) {
-		Collection<Field> realNeighbors = neighborStrategy.getNeighborsFor(field);
+	void fixNeighbors(NeighborFind<T> neighborStrategy, IFieldProxyProvider<T> proxyProvider) {
+		Collection<T> realNeighbors = neighborStrategy.getNeighborsFor(field);
 		this.detailedCombinations = new double[realNeighbors.size() + 1];
-		for (Field neighbor : realNeighbors) {
+		for (T neighbor : realNeighbors) {
 			if (neighborStrategy.isFoundAndisMine(neighbor)) {
 				this.found++;
 				continue; // A found mine is not, and should not be, in a fieldproxy
 			}
 			
-			FieldProxy<Field> proxy = proxyProvider.getProxyFor(neighbor);
+			FieldProxy<T> proxy = proxyProvider.getProxyFor(neighbor);
 			if (proxy == null) continue;
 			
-			FieldGroup<Field> neighborGroup = proxy.group;
+			FieldGroup<T> neighborGroup = proxy.group;
 			if (neighborGroup != null) {
 				// Ignore zero-probability neighborGroups
 				if (neighborGroup.getProbability() == 0) {
@@ -91,25 +91,25 @@ public class FieldProxy<Field> implements ProbabilityKnowledge<Field> {
 		
 	}
 	
-	void addSolution(Solution<Field> solution) {
+	void addSolution(Solution<T> solution) {
 		solution = solution.copyWithoutNCRData();
 		
 		recursiveRemove(solution, 1, 0);
 	}
 	
 	
-	private void recursiveRemove(Solution<Field> solution, double combinations, int mines) { // RevealProvider<Field> parameter for EV ?
+	private void recursiveRemove(Solution<T> solution, double combinations, int mines) { // RevealProvider<Field> parameter for EV ?
 		if (Thread.interrupted())
     		throw new RuntimeTimeoutException();
 		
-		GroupValues<Field> remaining = solution.getSetGroupValues();
+		GroupValues<T> remaining = solution.getSetGroupValues();
 		if (remaining.isEmpty()) { // or if combinations equals zero ?
 			this.detailedCombinations[mines + this.found] += combinations;
 			return;
 		}
 		
-		Entry<FieldGroup<Field>, Integer> ee = remaining.entrySet().iterator().next();
-		FieldGroup<Field> group = ee.getKey();
+		Entry<FieldGroup<T>, Integer> ee = remaining.entrySet().iterator().next();
+		FieldGroup<T> group = ee.getKey();
 		
 		
 		int N = ee.getKey().size();
@@ -155,7 +155,7 @@ public class FieldProxy<Field> implements ProbabilityKnowledge<Field> {
 		return this.detailedCombinations;
 	}
 
-	void copyFromOther(FieldProxy<Field> copyFrom, double analyzeTotal) {
+	void copyFromOther(FieldProxy<T> copyFrom, double analyzeTotal) {
 //		Zomis.echo("Copying: " + this + "\nFROM " + cheatFrom);
 		for (int i = 0; i < this.detailedCombinations.length - this.found; i++) {
 //			Zomis.echo("i " + i + " / " + this.detailedCombinations.length + " this found: " + this.found);
@@ -166,7 +166,7 @@ public class FieldProxy<Field> implements ProbabilityKnowledge<Field> {
 		this.finalCalculation(analyzeTotal);
 	}
 	@Override
-	public FieldGroup<Field> getFieldGroup() {
+	public FieldGroup<T> getFieldGroup() {
 		return this.group; // Perhaps extend unmodifiable list? Although that could cause problems when splitting groups.
 //		return new FieldGroup<Field>(this.group);
 	}
