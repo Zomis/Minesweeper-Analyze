@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
-public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
+public class RootAnalyzeImpl<T> implements SolvedCallback<T>, AnalyzeResult<T> {
 	private final List<FieldGroup<T>> groups = new ArrayList<FieldGroup<T>>();
 	private final List<FieldRule<T>> originalRules = new ArrayList<FieldRule<T>>();
 	private final List<FieldRule<T>> rules = new ArrayList<FieldRule<T>>();
@@ -100,7 +100,7 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 	}
 	
 	@Override
-	public RootAnalyze<T> cloneAddSolve(List<FieldRule<T>> extraRules) {
+	public AnalyzeResult<T> cloneAddSolve(List<FieldRule<T>> extraRules) {
 		List<FieldRule<T>> newRules = this.getOriginalRules();
 		newRules.addAll(extraRules);
 		RootAnalyzeImpl<T> copy = new RootAnalyzeImpl<T>();
@@ -172,7 +172,7 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 	}
 	
 	
-	public void solve() {
+	public AnalyzeResult<T> solve() {
 		if (this.solved) {
 			throw new IllegalStateException("Analyze has already been solved");
 		}
@@ -200,6 +200,7 @@ public class RootAnalyzeImpl<T> implements SolvedCallback<T>, RootAnalyze<T> {
 			}
 		}
 		this.solved = true;
+		return this;
 	}
 	
 	@Override

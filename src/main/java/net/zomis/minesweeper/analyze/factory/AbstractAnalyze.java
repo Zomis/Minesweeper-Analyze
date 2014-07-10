@@ -1,14 +1,16 @@
 package net.zomis.minesweeper.analyze.factory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import net.zomis.minesweeper.analyze.FieldRule;
 import net.zomis.minesweeper.analyze.RootAnalyzeImpl;
+import net.zomis.minesweeper.analyze.detail.NeighborFind;
 
-public abstract class AbstractAnalyze<F> extends RootAnalyzeImpl<F> {
+public abstract class AbstractAnalyze<F> extends RootAnalyzeImpl<F> implements NeighborFind<F> {
 	
 	public AbstractAnalyze() {
 	}
@@ -78,5 +80,15 @@ public abstract class AbstractAnalyze<F> extends RootAnalyzeImpl<F> {
 	protected abstract List<F> getNeighbors(F field);
 	
 	protected abstract boolean isClicked(F neighbor);
+	
+	@Override
+	public Collection<F> getNeighborsFor(F field) {
+		return getNeighbors(field);
+	}
+	
+	@Override
+	public boolean isFoundAndisMine(F field) {
+		return isDiscoveredMine(field);
+	}
 	
 }

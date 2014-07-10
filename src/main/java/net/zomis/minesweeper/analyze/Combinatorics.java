@@ -11,6 +11,10 @@ import java.util.List;
 public class Combinatorics {
 	private Combinatorics() { }
 	
+	public static double NNKK(int N, int n, int K, int k) {
+		return nCr(K, k) * nCr(N - K, n - k); //	/ RootAnalyze.nCr(N, n)
+	}
+	
 	public static <T> List<T> listCombination(double combination, int size, List<T> elementList) {
 		if (Math.rint(combination) != combination) {
 			throw new IllegalArgumentException("x is not an integer " + combination);

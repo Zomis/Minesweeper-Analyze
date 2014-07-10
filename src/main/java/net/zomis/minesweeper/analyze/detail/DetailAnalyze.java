@@ -8,70 +8,62 @@ import java.util.Map.Entry;
 
 import net.zomis.minesweeper.analyze.FieldGroup;
 import net.zomis.minesweeper.analyze.GroupValues;
-import net.zomis.minesweeper.analyze.RootAnalyze;
+import net.zomis.minesweeper.analyze.AnalyzeResult;
 import net.zomis.minesweeper.analyze.Solution;
 
-public class DetailAnalyze<Field> implements IFieldProxyProvider<Field> {
-	private final List<FieldGroup<Field>>	groups;
-	private final Map<Field, FieldProxy<Field>> proxies;
-	private final RootAnalyze<Field>	analyze;
+public class DetailAnalyze<T> {
+	// TODO: Separate into Analyze and analyze result. Add a method on `AnalyzeResult` to retreive a `DetailedAnalyzeResult`
+	private final AnalyzeResult<T>	analyze;
+	private final List<FieldGroup<T>>	groups;
+	private final Map<T, FieldProxy<T>> proxies;
 	private int	proxyCount;
 
-	public Collection<FieldProxy<Field>> getProxies() {
+	public DetailAnalyze(AnalyzeResult<T> analyze) {
+		this.analyze = analyze;
+		this.groups = analyze.getGroups();
+		this.proxies = new HashMap<T, FieldProxy<T>>();
+	}
+	
+	public Collection<FieldProxy<T>> getProxies() {
 		return this.proxies.values();
 	}
 	
-	public DetailAnalyze(RootAnalyze<Field> analyze) {
-		this.analyze = analyze;
-		this.groups = analyze.getGroups();
-		this.proxies = new HashMap<Field, FieldProxy<Field>>();
+	public int getProxyCount() {
+		return proxyCount;
+	}
+
+	public FieldProxy<T> getProxyFor(T field) {
+		return this.proxies.get(field);
 	}
 	
-	public Map<Field, FieldProxy<Field>> solveDetailed(NeighborFind<Field> neighborStrategy) {
-		// Total of max 256 iterations here
-		for (FieldGroup<Field> grp : this.groups) {
-			for (Field f : grp) {
-				FieldProxy<Field> proxy = new FieldProxy<Field>(grp, f);
-				proxies.put(f, proxy);
+	public Map<T, FieldProxy<T>> solveDetailed(NeighborFind<T> neighborStrategy) {
+		for (FieldGroup<T> group : this.groups) {
+			for (T field : group) {
+				FieldProxy<T> proxy = new FieldProxy<T>(group, field);
+				proxies.put(field, proxy);
 			}
 		}
 		
-		// 256 iterations
-		for (FieldProxy<Field> ff : this.proxies.values()) {
-			ff.fixNeighbors(neighborStrategy, this);
+		for (FieldProxy<T> fieldProxy : this.proxies.values()) {
+			fieldProxy.fixNeighbors(neighborStrategy, this);
 		}
 		
-		// 256 iterations
-//		int i = 0;
-//		int total = this.proxies.size();
 		double ncrtotal = this.analyze.getTotal();
-		Map<GroupValues<Field>, FieldProxy<Field>> bufferedValues = new HashMap<GroupValues<Field>, FieldProxy<Field>>();
-		for (Entry<Field, FieldProxy<Field>> ee : this.proxies.entrySet()) {
-//			i++;
-			// A hell lot of iterations...
-			FieldProxy<Field> mappedValue = bufferedValues.get(ee.getValue().getNeighbors());
+		Map<GroupValues<T>, FieldProxy<T>> bufferedValues = new HashMap<GroupValues<T>, FieldProxy<T>>();
+		for (Entry<T, FieldProxy<T>> ee : this.proxies.entrySet()) {
+			FieldProxy<T> mappedValue = bufferedValues.get(ee.getValue().getNeighbors());
 			if (mappedValue != null && mappedValue.getFieldGroup() == ee.getValue().getFieldGroup()) {
 				ee.getValue().copyFromOther(mappedValue, ncrtotal);
-//				Zomis.echo("Cheat Known: " + i + " / " + total + ": " + ee.getValue());
 			}
 			else {
-				for (Solution<Field> solution : analyze.getSolutionIteration()) {
+				for (Solution<T> solution : analyze.getSolutionIteration()) {
 					ee.getValue().addSolution(solution);
 				}
 				ee.getValue().finalCalculation(ncrtotal);
 				bufferedValues.put(ee.getValue().getNeighbors(), ee.getValue());
-//				Zomis.echo("Known: " + i + " / " + total + ": " + ee.getValue());
 			}
 		}
 		this.proxyCount = bufferedValues.size();
 		return this.proxies;
-	}
-
-	@Override
-	public FieldProxy<Field> getProxyFor(Field field) {
-		return this.proxies.get(field);
-	}
-	public int getProxyCount() {
-		return proxyCount;
 	}
 }

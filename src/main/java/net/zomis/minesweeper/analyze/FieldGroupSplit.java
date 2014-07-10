@@ -1,6 +1,8 @@
 package net.zomis.minesweeper.analyze;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FieldGroupSplit<T> {
 
@@ -59,4 +61,45 @@ public class FieldGroupSplit<T> {
 		return new FieldGroupSplit<T>(onlyA, both, onlyB);
 	}
 
+	public static final <T> FieldGroupSplit<T> splitHash(final FieldGroup<T> a, final FieldGroup<T> b) {
+
+	    if (a == b || a.isEmpty() || b.isEmpty()) {
+	        return null;
+	    }
+
+	    final boolean aIsSmall = a.size() <= b.size();
+
+	    final FieldGroup<T> smallestGroup = aIsSmall ? a : b;
+	    final Set<T> setBig = new HashSet<T>(aIsSmall ? b : a);
+
+	    final Set<T> setBoth = new HashSet<T>(smallestGroup.size());
+
+	    final FieldGroup<T> aOnly = new FieldGroup<T>(a.size());
+	    final FieldGroup<T> bOnly = new FieldGroup<T>(b.size());
+
+	    final FieldGroup<T> smallOnly = aIsSmall ? aOnly : bOnly;
+	    final FieldGroup<T> bigOnly = aIsSmall ? bOnly : aOnly;
+
+	    for (final T val : smallestGroup) {
+	        if (setBig.contains(val)) {
+	            setBoth.add(val);
+	        } else {
+	            smallOnly.add(val);
+	        }
+	    }
+
+	    if (setBoth.isEmpty()) {
+	        return null;
+	    }
+
+	    for (final T val : setBig) {
+	        if (!setBoth.contains(val)) {
+	            bigOnly.add(val);
+	        }
+	    }
+
+	    return new FieldGroupSplit<T>(aOnly, aOnly.isEmpty() && bOnly.isEmpty() ? a : new FieldGroup<T>(setBoth), bOnly);
+
+	}
+	
 }

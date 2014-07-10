@@ -25,6 +25,16 @@ public class FieldGroupSplitTest {
 	}
 	
 	@Test
+	public void sameFields() {
+		FieldGroup<String> a = new FieldGroup<String>(Arrays.asList("a", "a", "b", "c"));
+		FieldGroup<String> b = new FieldGroup<String>(Arrays.asList("a", "a", "d", "e"));
+		FieldGroupSplit<String> split = split(a, b);
+		assertEquals(new FieldGroup<String>(Arrays.asList("b", "c")), split.getOnlyA());
+		assertEquals(new FieldGroup<String>(Arrays.asList("a", "a")), split.getBoth());
+		assertEquals(new FieldGroup<String>(Arrays.asList("d", "e")), split.getOnlyB());
+	}
+	
+	@Test
 	public void split() {
 		FieldGroup<String> a = new FieldGroup<String>(Arrays.asList("a", "b", "c"));
 		FieldGroup<String> b = new FieldGroup<String>(Arrays.asList("b", "c", "d"));

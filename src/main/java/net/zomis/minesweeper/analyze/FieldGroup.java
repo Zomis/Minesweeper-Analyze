@@ -10,6 +10,7 @@ import java.util.Collection;
  * @param <T> The field type
  */
 public class FieldGroup<T> extends ArrayList<T> {
+	// TODO: Use composition over inheritance. Perhaps switch to using `HashSet` (even though it will be less flexible)
 	private static final long serialVersionUID = 4172065050118874050L;
 	
 	private double probability = 0;
@@ -30,10 +31,11 @@ public class FieldGroup<T> extends ArrayList<T> {
 		return this.solutionsKnown;
 	}
 
-	void informAboutSolution(int rValue, Solution<T> solution, double total) {
-		if (rValue == 0)
+	void informAboutSolution(int minesForGroup, Solution<T> solution, double total) {
+		if (minesForGroup == 0) {
 			return;
-		this.probability = this.probability + solution.nCr() / total * rValue / this.size();
+		}
+		this.probability = this.probability + solution.nCr() / total * minesForGroup / this.size();
 		this.solutionsKnown++;
 	}
 	
@@ -44,8 +46,9 @@ public class FieldGroup<T> extends ArrayList<T> {
 		
 		StringBuilder str = new StringBuilder();
 		for (T field : this) {
-			if (str.length() > 0)
+			if (str.length() > 0) {
 				str.append(" + ");
+			}
 			str.append(field);
 		}
 		return "(" + str.toString() + ")";

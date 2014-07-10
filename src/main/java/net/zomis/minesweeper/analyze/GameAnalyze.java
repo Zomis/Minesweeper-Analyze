@@ -42,9 +42,6 @@ public class GameAnalyze<T> {
 	}
 	
 	void solve() {
-		if (Thread.interrupted())
-    		throw new RuntimeTimeoutException();
-		
 		if (!this.simplifyRules()) {
 			return;
 		}
@@ -58,6 +55,10 @@ public class GameAnalyze<T> {
 	}
 	
 	private void solveRules() {
+		if (Thread.interrupted()) {
+    		throw new RuntimeTimeoutException();
+		}
+		
 		if (this.rules.isEmpty())
 			return;
 		
@@ -66,6 +67,7 @@ public class GameAnalyze<T> {
 			throw new IllegalStateException("Chosen group is null.");
 		}
 		int groupSize = chosenGroup.size();
+		
 		if (groupSize == 0) {
 			throw new IllegalStateException("Chosen group is empty. " + chosenGroup);
 		}

@@ -16,10 +16,11 @@ public class GroupValues<T> extends HashMap<FieldGroup<T>, Integer> {
 
 	@Override
 	public int hashCode() {
-		if (bufferedHash != 0) return this.bufferedHash;
+		if (bufferedHash != 0) {
+			return this.bufferedHash;
+		}
 		
 		int result = super.hashCode();
-		System.out.println("Hash buffered: " + result);
 		this.bufferedHash = result;
 		return result;
 	}

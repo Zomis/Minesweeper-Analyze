@@ -3,8 +3,8 @@ package net.zomis.minesweeper.analyze;
 import java.util.List;
 import java.util.Random;
 
-public interface RootAnalyze<T> {
-	RootAnalyze<T> cloneAddSolve(List<FieldRule<T>> extraRules);
+public interface AnalyzeResult<T> {
+	AnalyzeResult<T> cloneAddSolve(List<FieldRule<T>> extraRules);
 	
 	List<T> getFields();
 	
