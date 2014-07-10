@@ -65,11 +65,12 @@ public class GameAnalyze<T> {
 		if (chosenGroup == null) {
 			throw new IllegalStateException("Chosen group is null.");
 		}
-		if (chosenGroup.size() == 0) {
+		int groupSize = chosenGroup.size();
+		if (groupSize == 0) {
 			throw new IllegalStateException("Chosen group is empty. " + chosenGroup);
 		}
 		
-		for (int i = 0; i <= chosenGroup.size(); i++) {
+		for (int i = 0; i <= groupSize; i++) {
 			GroupValues<T> mapCopy = new GroupValues<T>(this.knownValues);
 			mapCopy.put(chosenGroup, i);
 			

@@ -18,6 +18,9 @@ public class FieldGroup<T> extends ArrayList<T> {
 	public FieldGroup(Collection<T> fields) {
 		super(fields);
 	}
+	FieldGroup(int size) {
+		super(size);
+	}
 	
 	public double getProbability() {
 		return this.probability;

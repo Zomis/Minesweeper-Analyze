@@ -36,12 +36,12 @@ public class FieldGroupSplit<T> {
 	}
 
 	public static <T> FieldGroupSplit<T> split(FieldGroup<T> a, FieldGroup<T> b) {
-		if (a == b)
+		if (a == b) {
 			return null;
-		
-		if (Collections.disjoint(a, b)) 
+		}
+		if (Collections.disjoint(a, b)) { 
 			return null; // Return if the groups have no fields in common
-		
+		}
 		FieldGroup<T> both = new FieldGroup<T>(a);
 		FieldGroup<T> onlyA = new FieldGroup<T>(a);
 		FieldGroup<T> onlyB = new FieldGroup<T>(b);

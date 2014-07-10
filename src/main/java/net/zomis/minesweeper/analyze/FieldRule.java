@@ -59,12 +59,14 @@ public class FieldRule<T> {
 		
 		for (FieldGroup<T> groupA : fieldsCopy) {
 			for (FieldGroup<T> groupB : ruleFieldsCopy) {
-				if (groupA == groupB)
+				if (groupA == groupB) {
 					continue;
+				}
 				
 				FieldGroupSplit<T> splitResult = FieldGroupSplit.split(groupA, groupB);
-				if (splitResult == null)
+				if (splitResult == null) {
 					continue; // nothing to split
+				}
 				
 				FieldGroup<T> both = splitResult.getBoth();
 				FieldGroup<T> onlyA = splitResult.getOnlyA();
