@@ -6,6 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import net.zomis.minesweeper.analyze.detail.DetailAnalyze;
+import net.zomis.minesweeper.analyze.detail.DetailedResults;
+import net.zomis.minesweeper.analyze.detail.NeighborFind;
+
 public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 	private final List<FieldGroup<T>> groups;
 	private final List<FieldRule<T>> rules;
@@ -183,4 +187,9 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 		return this.solutions;
 	}
 
+	@Override
+	public DetailedResults<T> analyzeDetailed(NeighborFind<T> neighborStrategy) {
+		return DetailAnalyze.solveDetailed(this, neighborStrategy);
+	}
+	
 }

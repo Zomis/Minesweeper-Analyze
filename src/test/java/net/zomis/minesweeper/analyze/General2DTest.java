@@ -21,8 +21,8 @@ public class General2DTest {
 		AnalyzeResult<CharPoint> analyze = gen2d.solve();
 		
 		FieldGroup<CharPoint> grp = analyze.getGroupFor(gen2d.getPoint(0, 0));
-//		assertEquals(0, grp.getSolutionsKnown()); // TODO: Make a proper assertion here.
-		assertEquals(analyze.getSolutions().size(), grp.getSolutionsKnown() + 1); // Group is set to zero in one solution
+		assertEquals(1, grp.getSolutionsKnown());
+		assertEquals(2, analyze.getSolutions().size());
 		
 		assertEquals(16 - 2, analyze.getFields().size());
 		assertEquals(3*6 + 4*3*4, analyze.getTotal(), 0.000001);

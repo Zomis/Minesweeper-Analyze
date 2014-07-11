@@ -26,7 +26,7 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	
 	private GroupValues<T> neighbors;
 	
-	FieldProxy(FieldGroup<T> group, T field) {
+	public FieldProxy(FieldGroup<T> group, T field) {
 		this.field = field;
 		this.neighbors = new GroupValues<T>();
 		this.group = group;
@@ -58,7 +58,7 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		}
 	}
 	
-	void fixNeighbors(NeighborFind<T> neighborStrategy, DetailAnalyze<T> proxyProvider) {
+	void fixNeighbors(NeighborFind<T> neighborStrategy, ProxyProvider<T> proxyProvider) {
 		Collection<T> realNeighbors = neighborStrategy.getNeighborsFor(field);
 		this.detailedCombinations = new double[realNeighbors.size() + 1];
 		for (T neighbor : realNeighbors) {
@@ -68,7 +68,9 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 			}
 			
 			FieldProxy<T> proxy = proxyProvider.getProxyFor(neighbor);
-			if (proxy == null) continue;
+			if (proxy == null) {
+				continue;
+			}
 			
 			FieldGroup<T> neighborGroup = proxy.group;
 			if (neighborGroup != null) {

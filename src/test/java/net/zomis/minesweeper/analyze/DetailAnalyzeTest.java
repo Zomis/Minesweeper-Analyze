@@ -1,13 +1,12 @@
 package net.zomis.minesweeper.analyze;
 
 import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import net.zomis.minesweeper.analyze.detail.DetailAnalyze;
+import net.zomis.minesweeper.analyze.detail.DetailedResults;
 import net.zomis.minesweeper.analyze.detail.FieldProxy;
 import net.zomis.minesweeper.analyze.factory.CharPoint;
 import net.zomis.minesweeper.analyze.factory.General2DAnalyze;
+
+import org.junit.Test;
 
 public class DetailAnalyzeTest {
 
@@ -23,8 +22,7 @@ public class DetailAnalyzeTest {
 		General2DAnalyze analyze = new General2DAnalyze(input);
 		AnalyzeResult<CharPoint> results = analyze.solve();
 		
-		DetailAnalyze<CharPoint> detail = new DetailAnalyze<CharPoint>(results);
-		detail.solveDetailed(analyze); // NeighborFind strategy
+		DetailedResults<CharPoint> detail = results.analyzeDetailed(analyze);
 		
 		assertEquals(6, detail.getProxyCount());
 		

@@ -3,6 +3,9 @@ package net.zomis.minesweeper.analyze;
 import java.util.List;
 import java.util.Random;
 
+import net.zomis.minesweeper.analyze.detail.DetailedResults;
+import net.zomis.minesweeper.analyze.detail.NeighborFind;
+
 public interface AnalyzeResult<T> {
 	AnalyzeResult<T> cloneAddSolve(List<FieldRule<T>> extraRules);
 	
@@ -31,5 +34,7 @@ public interface AnalyzeResult<T> {
 	double getTotal();
 
 	List<T> randomSolution(Random random);
+
+	DetailedResults<T> analyzeDetailed(NeighborFind<T> neighborStrategy);
 
 }
