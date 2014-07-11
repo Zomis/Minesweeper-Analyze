@@ -27,40 +27,42 @@ public class AnalyzeTest {
 	
 	@Test
 	public void aWholeLotOfConnectedThreesComplexMap() {
-		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
+		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
 		List<String> openSea = addBoard(16, 16);
-		root.addRule(placeThreeAt(1, 1, openSea));
-		root.addRule(placeThreeAt(9, 1, openSea));
-		root.addRule(placeThreeAt(13, 1, openSea));
+		before.addRule(placeThreeAt(1, 1, openSea));
+		before.addRule(placeThreeAt(9, 1, openSea));
+		before.addRule(placeThreeAt(13, 1, openSea));
 		
-		root.addRule(placeThreeAt(3, 3, openSea));
-		root.addRule(placeThreeAt(7, 3, openSea));
-		root.addRule(placeThreeAt(11, 3, openSea));
+		before.addRule(placeThreeAt(3, 3, openSea));
+		before.addRule(placeThreeAt(7, 3, openSea));
+		before.addRule(placeThreeAt(11, 3, openSea));
 		
-		root.addRule(placeThreeAt(5, 5, openSea));
+		before.addRule(placeThreeAt(5, 5, openSea));
 		
-		root.addRule(placeThreeAt(7, 7, openSea));
-		root.addRule(placeThreeAt(11, 7, openSea));
+		before.addRule(placeThreeAt(7, 7, openSea));
+		before.addRule(placeThreeAt(11, 7, openSea));
 		
-		root.addRule(placeThreeAt(1, 9, openSea));
-		root.addRule(placeThreeAt(9, 9, openSea));
+		before.addRule(placeThreeAt(1, 9, openSea));
+		before.addRule(placeThreeAt(9, 9, openSea));
 		
-		root.addRule(placeThreeAt(3, 11, openSea));
-		root.addRule(placeThreeAt(7, 11, openSea));
-		root.addRule(placeThreeAt(11, 11, openSea));
+		before.addRule(placeThreeAt(3, 11, openSea));
+		before.addRule(placeThreeAt(7, 11, openSea));
+		before.addRule(placeThreeAt(11, 11, openSea));
 		
-		root.addRule(placeThreeAt(1, 13, openSea));
-		root.addRule(placeThreeAt(5, 13, openSea));
-		root.addRule(placeThreeAt(13, 13, openSea));
+		before.addRule(placeThreeAt(1, 13, openSea));
+		before.addRule(placeThreeAt(5, 13, openSea));
+		before.addRule(placeThreeAt(13, 13, openSea));
 		
 		assertEquals(256 - 17, openSea.size());
 		FieldRule<String> globalRule = new FieldRule<String>("global", openSea, 51);
-		root.addRule(globalRule);
+		before.addRule(globalRule);
 		
 		assertEquals(51, globalRule.getResult());
 		
+		before.splitFieldRules();
+		
 		long time = System.nanoTime();
-		root.solve();
+		AnalyzeResult<String> root = before.solve();
 		long timeEnd = System.nanoTime();
 		for (FieldGroup<String> ee : root.getGroups())
 			System.out.println(ee + ": " + ee.getProbability());
@@ -118,11 +120,11 @@ public class AnalyzeTest {
 //		a14c
 //		abbc
 //		dddd
-		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
-		root.addRule(new FieldRule<String>("global", Arrays.asList("a", "b", "b", "c", "a", "c", "a", "b", "b", "c", "d", "d", "d", "d"), 6));
-		root.addRule(new FieldRule<String>("1", Arrays.asList("a", "b", "b", "a", "a", "b", "b"), 1));
-		root.addRule(new FieldRule<String>("4", Arrays.asList("b", "b", "c", "c", "b", "b", "c"), 4));
-		root.solve();
+		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
+		before.addRule(new FieldRule<String>("global", Arrays.asList("a", "b", "b", "c", "a", "c", "a", "b", "b", "c", "d", "d", "d", "d"), 6));
+		before.addRule(new FieldRule<String>("1", Arrays.asList("a", "b", "b", "a", "a", "b", "b"), 1));
+		before.addRule(new FieldRule<String>("4", Arrays.asList("b", "b", "c", "c", "b", "b", "c"), 4));
+		AnalyzeResult<String> root = before.solve();
 		
 		assertEquals(3, root.getOriginalRules().size());
 		assertEquals(4, root.getGroups().size());
@@ -169,11 +171,11 @@ public class AnalyzeTest {
 		 * k+l+m+n = 3			4
 		 **/
 		
-		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
-		root.addRule(new FieldRule<String>("global", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"), 6));
-		root.addRule(new FieldRule<String>("1", Arrays.asList("a", "b", "c", "e", "g", "h", "i"), 1));
-		root.addRule(new FieldRule<String>("3", Arrays.asList("b", "c", "d", "f", "h", "i", "j"), 3));
-		root.solve();
+		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
+		before.addRule(new FieldRule<String>("global", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"), 6));
+		before.addRule(new FieldRule<String>("1", Arrays.asList("a", "b", "c", "e", "g", "h", "i"), 1));
+		before.addRule(new FieldRule<String>("3", Arrays.asList("b", "c", "d", "f", "h", "i", "j"), 3));
+		AnalyzeResult<String> root = before.solve();
 		
 		assertEquals(3, root.getOriginalRules().size());
 		assertEquals(4, root.getGroups().size());
@@ -221,11 +223,11 @@ public class AnalyzeTest {
 	
 	@Test
 	public void rulesFromString() {
-		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
+		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
 		FieldRule<String> rule = new FieldRule<String>("global", fields("abc"), 1);
-		root.addRule(rule);
-		root.addRule(createRule("(b + c) = 1"));
-		root.solve();
+		before.addRule(rule);
+		before.addRule(createRule("(b + c) = 1"));
+		AnalyzeResult<String> root = before.solve();
 		
 		assertEquals(0, root.getGroupFor("a").getProbability(), EPSILON);
 		assertEquals(0.5, root.getGroupFor("b").getProbability(), EPSILON);

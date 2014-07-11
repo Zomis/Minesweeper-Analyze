@@ -17,10 +17,11 @@ public class General2DTest {
 				"__x_",
 				"_xxx",
 		};
-		General2DAnalyze analyze = new General2DAnalyze(input);
-		analyze.solve();
+		General2DAnalyze gen2d = new General2DAnalyze(input);
+		AnalyzeResult<CharPoint> analyze = gen2d.solve();
 		
-		FieldGroup<CharPoint> grp = analyze.getGroupFor(analyze.getPoint(0, 0));
+		FieldGroup<CharPoint> grp = analyze.getGroupFor(gen2d.getPoint(0, 0));
+//		assertEquals(0, grp.getSolutionsKnown()); // TODO: Make a proper assertion here.
 		assertEquals(analyze.getSolutions().size(), grp.getSolutionsKnown() + 1); // Group is set to zero in one solution
 		
 		assertEquals(16 - 2, analyze.getFields().size());

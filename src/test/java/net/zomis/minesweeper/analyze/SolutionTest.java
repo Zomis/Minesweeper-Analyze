@@ -21,15 +21,16 @@ public class SolutionTest {
 		"_xxx",
 	};
 	
-	private General2DAnalyze	analyze;
+	private AnalyzeResult<CharPoint> analyze;
+	private General2DAnalyze general2d;
 	
 	@Rule
 	public ExpectedException expected = ExpectedException.none();
 	
 	@Before
 	public void setup() {
-		analyze = new General2DAnalyze(input);
-		analyze.solve();
+		general2d = new General2DAnalyze(input);
+		analyze = general2d.solve();
 	}
 	
 	@Test
@@ -45,19 +46,12 @@ public class SolutionTest {
 	}
 	
 	@Test
-	public void copyData() {
-		Solution<CharPoint> solution = findWithCombinations(4 * 3 * 4);
-		expected.expect(IllegalStateException.class);
-		solution.copyWithoutNCRData().getProbability();
-	}
-	
-	@Test
 	public void firstSolution() {
 		Solution<CharPoint> solution = findWithCombinations(4 * 3 * 4);
-		assertEquals(0, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(0, 0))));
-		assertEquals(1, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(1, 0))));
-		assertEquals(2, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(3, 0))));
-		assertEquals(3, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(0, 3))));
+		assertEquals(0, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(0, 0))));
+		assertEquals(1, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(1, 0))));
+		assertEquals(2, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(3, 0))));
+		assertEquals(3, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(0, 3))));
 		assertEquals(1 * 4 * 3 * 4, solution.getCombinations(), 0.0001);
 		assertEquals(48.0 / 66.0, solution.getProbability(), 0.0001);
 		
@@ -71,16 +65,16 @@ public class SolutionTest {
 				return sol;
 			}
 		}
-		return null;
+		throw new NullPointerException("No solution found with " + i + " combinations");
 	}
 
 	@Test
 	public void secondSolution() {
 		Solution<CharPoint> solution = findWithCombinations(6 * 3);
-		assertEquals(1, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(0, 0))));
-		assertEquals(0, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(1, 0))));
-		assertEquals(3, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(3, 0))));
-		assertEquals(2, (int) solution.getSetGroupValues().get(analyze.getGroupFor(analyze.getPoint(0, 3))));
+		assertEquals(1, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(0, 0))));
+		assertEquals(0, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(1, 0))));
+		assertEquals(3, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(3, 0))));
+		assertEquals(2, (int) solution.getSetGroupValues().get(analyze.getGroupFor(general2d.getPoint(0, 3))));
 		assertEquals(3 * 1 * 1 * 6, solution.getCombinations(), 0.0001);
 		assertEquals(18.0 / 66.0, solution.getProbability(), 0.0001);
 	}

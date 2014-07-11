@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import net.zomis.minesweeper.analyze.AnalyzeResult;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -39,13 +41,16 @@ public class General2DAnalyzeTest {
 	
 	@Test
 	public void testInput() {
-		General2DAnalyze analyze = new General2DAnalyze(input, -1);
-		analyze.solve();
+		General2DAnalyze gen2d = new General2DAnalyze(input, -1);
+		AnalyzeResult<CharPoint> analyze = gen2d.solve();
 		
 		assertEquals(2, analyze.getTotal(), 0.00001);
-		assertEquals(-1, analyze.getRemainingMinesCount());
+		assertEquals(-1, gen2d.getRemainingMinesCount());
 		assertEquals(2, analyze.getGroups().size());
 		assertEquals(2, analyze.getOriginalRules().size());
+		
+		System.out.println(analyze.getRules());
+		
 		assertEquals(0, analyze.getRules().size());
 	}
 	

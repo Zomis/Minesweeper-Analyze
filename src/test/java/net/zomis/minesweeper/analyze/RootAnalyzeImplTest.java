@@ -15,8 +15,7 @@ public class RootAnalyzeImplTest {
 
 	@Test
 	public void noGroups() {
-		General2DAnalyze analyze = new General2DAnalyze(new String[]{ "#" }, 1);
-		analyze.solve();
+		AnalyzeResult<CharPoint> analyze = new General2DAnalyze(new String[]{ "#" }, 1).solve();
 		
 		assertNull(analyze.getGroupFor(new CharPoint(0, 0, 'x')));
 		assertEquals(0, analyze.getGroups().size());
@@ -29,10 +28,10 @@ public class RootAnalyzeImplTest {
 			"_1_",
 			"_x_"
 		});
-		analyze.solve();
+		AnalyzeResult<CharPoint> solution = analyze.solve();
 		List<FieldRule<CharPoint>> extraRules = new ArrayList<FieldRule<CharPoint>>();
 		extraRules.add(new FieldRule<CharPoint>(null, Arrays.asList(analyze.getPoint(0, 0), analyze.getPoint(1, 0)), 1));
-		assertEquals(0.25, analyze.getProbabilityOf(extraRules), 0.0001);
+		assertEquals(0.25, solution.getProbabilityOf(extraRules), 0.0001);
 		assertFalse(false);
 	}
 	

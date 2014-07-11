@@ -24,12 +24,17 @@ public class DetailAnalyzeTest {
 		AnalyzeResult<CharPoint> results = analyze.solve();
 		
 		DetailAnalyze<CharPoint> detail = new DetailAnalyze<CharPoint>(results);
-		detail.solveDetailed(analyze);
+		detail.solveDetailed(analyze); // NeighborFind strategy
 		
 		assertEquals(6, detail.getProxyCount());
 		
+		for (FieldProxy<CharPoint> ee : detail.getProxies()) {
+			System.out.println(ee);
+			System.out.println();
+		}
+		
 		FieldProxy<CharPoint> field12 = detail.getProxyFor(analyze.getPoint(1, 2));
-		FieldProxy<CharPoint> field20 = detail.getProxyFor(analyze.getPoint(1, 2));
+		FieldProxy<CharPoint> field20 = detail.getProxyFor(analyze.getPoint(2, 0));
 		FieldProxy<CharPoint> field03 = detail.getProxyFor(analyze.getPoint(0, 3));
 		assertArrayEquals(new double[]{0.047619047619047616, 0.30158730158730157, 0.2857142857142857, 0.07936507936507936}, field20.getProbabilities(), 0.0000001);
 		assertArrayEquals(new double[]{0.031746031746031744, 0.2698412698412698, 0.38095238095238093, 0.15873015873015872, 0.015873015873015872, 0.0}, field03.getProbabilities(), 0.0000001);

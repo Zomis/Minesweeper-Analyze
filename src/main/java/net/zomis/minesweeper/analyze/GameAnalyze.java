@@ -6,6 +6,7 @@ import java.util.List;
 
 public class GameAnalyze<T> {
 
+	@Deprecated
 	private final SolvedCallback<T> callback;
 	private final GroupValues<T> knownValues;
 	private final List<FieldRule<T>> rules;
@@ -41,26 +42,29 @@ public class GameAnalyze<T> {
 		return true;
 	}
 	
-	void solve() {
+	double solve(List<Solution<T>> solutions) {
 		if (!this.simplifyRules()) {
-			return;
+			return 0;
 		}
 		
 		this.removeEmptyRules();
-		this.solveRules();
+		double total = this.solveRules(solutions);
 		
 		if (this.rules.isEmpty()) {
-			callback.solved(Solution.createSolution(this.knownValues));
+			Solution<T> solved = Solution.createSolution(this.knownValues);
+			solutions.add(solved);
+			total += solved.nCr();
 		}
+		return total;
 	}
 	
-	private void solveRules() {
+	private double solveRules(List<Solution<T>> solutions) {
 		if (Thread.interrupted()) {
     		throw new RuntimeTimeoutException();
 		}
 		
 		if (this.rules.isEmpty())
-			return;
+			return 0;
 		
 		FieldGroup<T> chosenGroup = this.rules.get(0).getSmallestFieldGroup();
 		if (chosenGroup == null) {
@@ -71,7 +75,7 @@ public class GameAnalyze<T> {
 		if (groupSize == 0) {
 			throw new IllegalStateException("Chosen group is empty. " + chosenGroup);
 		}
-		
+		double total = 0;
 		for (int i = 0; i <= groupSize; i++) {
 			GroupValues<T> mapCopy = new GroupValues<T>(this.knownValues);
 			mapCopy.put(chosenGroup, i);
@@ -81,8 +85,9 @@ public class GameAnalyze<T> {
 				rulesCopy.add(new FieldRule<T>(rule));
 			}
 
-			new GameAnalyze<T>(mapCopy, rulesCopy, this.callback).solve();
+			total += new GameAnalyze<T>(mapCopy, rulesCopy, this.callback).solve(solutions);
 		}
+		return total;
 	}
 	
 }

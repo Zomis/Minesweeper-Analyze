@@ -13,6 +13,7 @@ import net.zomis.minesweeper.analyze.Solution;
 
 public class DetailAnalyze<T> {
 	// TODO: Separate into Analyze and analyze result. Add a method on `AnalyzeResult` to retreive a `DetailedAnalyzeResult`
+	
 	private final AnalyzeResult<T>	analyze;
 	private final List<FieldGroup<T>>	groups;
 	private final Map<T, FieldProxy<T>> proxies;
