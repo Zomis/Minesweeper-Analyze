@@ -4,12 +4,12 @@ import net.zomis.minesweeper.analyze.FieldGroup;
 import net.zomis.minesweeper.analyze.GroupValues;
 
 
-public interface ProbabilityKnowledge<Field> {
+public interface ProbabilityKnowledge<T> {
 
-	Field getField();
-	FieldGroup<Field> getFieldGroup();
+	T getField();
+	FieldGroup<T> getFieldGroup();
 	int getFound();
 	double getMineProbability();
-	GroupValues<Field> getNeighbors();
+	GroupValues<T> getNeighbors();
 	double[] getProbabilities();
 }

@@ -20,13 +20,14 @@ public class DetailAnalyze<T> {
 			}
 		}
 		
+		ProxyProvider<T> provider = new ProxyProvider<T>() {
+			@Override
+			public FieldProxy<T> getProxyFor(T field) {
+				return proxies.get(field);
+			}
+		};
 		for (FieldProxy<T> fieldProxy : proxies.values()) {
-			fieldProxy.fixNeighbors(neighborStrategy, new ProxyProvider<T>() {
-				@Override
-				public FieldProxy<T> getProxyFor(T field) {
-					return proxies.get(field);
-				}
-			});
+			fieldProxy.fixNeighbors(neighborStrategy, provider);
 		}
 		
 		double ncrtotal = analyze.getTotal();
