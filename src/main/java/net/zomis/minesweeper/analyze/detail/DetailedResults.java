@@ -17,6 +17,4 @@ public interface DetailedResults<T> {
 
 	Map<T, FieldProxy<T>> getProxyMap();
 
-	
-	
 }

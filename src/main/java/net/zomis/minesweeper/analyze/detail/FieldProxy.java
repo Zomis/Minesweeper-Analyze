@@ -13,25 +13,22 @@ import net.zomis.minesweeper.analyze.Solution;
 public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	
 	private static int minK(int N, int K, int n) {
-		if (N == K) return n; // All fields in group are neighbors to this field, hence all mines must be neighbors to this field as well
-		return 0;
+		// If all fields in group are neighbors to this field then all mines must be neighbors to this field as well
+		return (N == K) ? n : 0;
 	}
 	
 	private double[] detailedCombinations;
 	private double[] detailedProbabilities;
-	private T field;
+	private final T field;
 	private int	found;
-	
-	private FieldGroup<T> group;
-	
-	private GroupValues<T> neighbors;
+	private final FieldGroup<T> group;
+	private final GroupValues<T> neighbors;
 	
 	public FieldProxy(FieldGroup<T> group, T field) {
 		this.field = field;
 		this.neighbors = new GroupValues<T>();
 		this.group = group;
 		this.found = 0;
-		
 	}
 	
 	void addSolution(Solution<T> solution) {
@@ -41,9 +38,7 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	}
 	
 	void copyFromOther(FieldProxy<T> copyFrom, double analyzeTotal) {
-//		Zomis.echo("Copying: " + this + "\nFROM " + cheatFrom);
 		for (int i = 0; i < this.detailedCombinations.length - this.found; i++) {
-//			Zomis.echo("i " + i + " / " + this.detailedCombinations.length + " this found: " + this.found);
 			if (copyFrom.detailedCombinations.length <= i + copyFrom.found) break;
 			this.detailedCombinations[i + this.found] = copyFrom.detailedCombinations[i + copyFrom.found];
 		}
@@ -79,7 +74,6 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 					continue;
 				}
 				
-				
 				Integer getValue = neighbors.get(neighborGroup);
 				
 				if (getValue == null) {
@@ -100,16 +94,16 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		return this.field;
 	}
 	
-	
 	@Override
 	public FieldGroup<T> getFieldGroup() {
-		return this.group; // Perhaps extend unmodifiable list? Although that could cause problems when splitting groups.
-//		return new FieldGroup<Field>(this.group);
+		return this.group;
 	}
+	
 	@Override
 	public int getFound() {
 		return this.found;
 	}
+	
 	@Override
 	public double getMineProbability() {
 		return this.group.getProbability();

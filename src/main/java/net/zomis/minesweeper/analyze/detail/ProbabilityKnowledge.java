@@ -12,4 +12,5 @@ public interface ProbabilityKnowledge<T> {
 	double getMineProbability();
 	GroupValues<T> getNeighbors();
 	double[] getProbabilities();
+	
 }
