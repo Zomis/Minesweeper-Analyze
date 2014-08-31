@@ -3,6 +3,7 @@ package net.zomis.minesweeper.analyze;
 import static org.junit.Assert.*;
 import net.zomis.minesweeper.analyze.detail.DetailedResults;
 import net.zomis.minesweeper.analyze.detail.FieldProxy;
+import net.zomis.minesweeper.analyze.detail.ProbabilityKnowledge;
 import net.zomis.minesweeper.analyze.factory.CharPoint;
 import net.zomis.minesweeper.analyze.factory.General2DAnalyze;
 
@@ -26,7 +27,7 @@ public class DetailAnalyzeTest {
 		
 		assertEquals(6, detail.getProxyCount());
 		
-		for (FieldProxy<CharPoint> ee : detail.getProxies()) {
+		for (ProbabilityKnowledge<CharPoint> ee : detail.getProxies()) {
 			System.out.println(ee);
 			System.out.println();
 		}
