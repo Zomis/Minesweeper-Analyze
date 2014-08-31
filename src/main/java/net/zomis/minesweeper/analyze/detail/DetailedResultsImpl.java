@@ -1,6 +1,7 @@
 package net.zomis.minesweeper.analyze.detail;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import net.zomis.minesweeper.analyze.AnalyzeResult;
@@ -19,7 +20,7 @@ public class DetailedResultsImpl<T> implements DetailedResults<T> {
 	
 	@Override
 	public Collection<FieldProxy<T>> getProxies() {
-		return this.proxies.values();
+		return Collections.unmodifiableCollection(proxies.values());
 	}
 	
 	@Override
@@ -29,7 +30,7 @@ public class DetailedResultsImpl<T> implements DetailedResults<T> {
 
 	@Override
 	public FieldProxy<T> getProxyFor(T field) {
-		return this.proxies.get(field);
+		return proxies.get(field);
 	}
 	
 	@Override
@@ -39,6 +40,6 @@ public class DetailedResultsImpl<T> implements DetailedResults<T> {
 	
 	@Override
 	public Map<T, FieldProxy<T>> getProxyMap() {
-		return proxies;
+		return Collections.unmodifiableMap(proxies);
 	}
 }
