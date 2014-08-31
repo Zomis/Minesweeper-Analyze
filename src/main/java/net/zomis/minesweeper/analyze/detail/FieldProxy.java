@@ -85,10 +85,6 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		
 	}
 	
-	public double[] getCombinations() {
-		return this.detailedCombinations;
-	}
-	
 	@Override
 	public T getField() {
 		return this.field;
