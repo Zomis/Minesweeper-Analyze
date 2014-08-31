@@ -32,20 +32,31 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	}
 	
 	void addSolution(Solution<T> solution) {
-		solution = solution.copyWithoutNCRData();
-		
-		recursiveRemove(solution, 1, 0);
+		recursiveRemove(solution.copyWithoutNCRData(), 1, 0);
 	}
 	
+	/**
+	 * This field has the same values as another field, copy the values.
+	 * 
+	 * @param copyFrom {@link FieldProxy} to copy from
+	 * @param analyzeTotal Total number of combinations
+	 */
 	void copyFromOther(FieldProxy<T> copyFrom, double analyzeTotal) {
 		for (int i = 0; i < this.detailedCombinations.length - this.found; i++) {
-			if (copyFrom.detailedCombinations.length <= i + copyFrom.found) break;
+			if (copyFrom.detailedCombinations.length <= i + copyFrom.found) {
+				break;
+			}
 			this.detailedCombinations[i + this.found] = copyFrom.detailedCombinations[i + copyFrom.found];
 		}
 		
 		this.finalCalculation(analyzeTotal);
 	}
 	
+	/**
+	 * Calculate final probabilities from the combinations information
+	 * 
+	 * @param analyzeTotal Total number of combinations
+	 */
 	void finalCalculation(double analyzeTotal) {
 		this.detailedProbabilities = new double[this.detailedCombinations.length];
 		for (int i = 0; i < this.detailedProbabilities.length; i++) {
@@ -53,6 +64,12 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		}
 	}
 	
+	/**
+	 * Setup the neighbors for this field
+	 * 
+	 * @param neighborStrategy {@link NeighborFind} strategy
+	 * @param proxyProvider Interface to get the related proxies
+	 */
 	void fixNeighbors(NeighborFind<T> neighborStrategy, ProxyProvider<T> proxyProvider) {
 		Collection<T> realNeighbors = neighborStrategy.getNeighborsFor(field);
 		this.detailedCombinations = new double[realNeighbors.size() + 1];
@@ -74,15 +91,14 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 					continue;
 				}
 				
-				Integer getValue = neighbors.get(neighborGroup);
-				
-				if (getValue == null) {
+				// Increase the number of neighbors
+				Integer currentNeighborAmount = neighbors.get(neighborGroup);
+				if (currentNeighborAmount == null) {
 					neighbors.put(neighborGroup, 1);
 				}
-				else neighbors.put(neighborGroup, getValue + 1);
+				else neighbors.put(neighborGroup, currentNeighborAmount + 1);
 			}
 		}
-		
 	}
 	
 	@Override
@@ -120,34 +136,39 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
     		throw new RuntimeTimeoutException();
 		}
 		
+		// Check if there are more field groups with values
 		GroupValues<T> remaining = solution.getSetGroupValues();
-		if (remaining.isEmpty()) { // or if combinations equals zero ?
+		if (remaining.isEmpty()) {
+			// TODO: or if combinations equals zero ?
 			this.detailedCombinations[mines + this.found] += combinations;
 			return;
 		}
 		
-		Entry<FieldGroup<T>, Integer> ee = remaining.entrySet().iterator().next();
-		FieldGroup<T> group = ee.getKey();
-		
-		
-		int N = ee.getKey().size();
-		int n = ee.getValue();
-		Integer K = this.neighbors.get(group);
+		// Get the first assignment
+		Entry<FieldGroup<T>, Integer> fieldGroupAssignment = remaining.entrySet().iterator().next();
+		FieldGroup<T> group = fieldGroupAssignment.getKey();
 		remaining.remove(group);
 		solution = Solution.createSolution(remaining);
 		
-		if (this.group == group) N--;
+		// Setup values for the hypergeometric distribution calculation. See http://en.wikipedia.org/wiki/Hypergeometric_distribution
+		int N = group.size();
+		int n = fieldGroupAssignment.getValue();
+		Integer K = this.neighbors.get(group);
+		if (this.group == group) {
+			N--; // Always exclude self becuase you can't be neighbor to yourself
+		}
 		
 		if (K == null) {
 			// This field does not have any neighbors to that group.
 			recursiveRemove(solution, combinations * Combinatorics.nCr(N, n), mines);
+			return;
 		}
-		else {
-			int maxLoop = Math.min(K, n);
-			for (int k = minK(N, K, n); k <= maxLoop; k++) {
-				double thisCombinations = Combinatorics.NNKK(N, n, K, k);
-				recursiveRemove(solution, combinations * thisCombinations, mines + k);
-			}
+		
+		// Calculate the values and then calculate for the next group
+		int maxLoop = Math.min(K, n);
+		for (int k = minK(N, K, n); k <= maxLoop; k++) {
+			double thisCombinations = Combinatorics.NNKK(N, n, K, k);
+			recursiveRemove(solution, combinations * thisCombinations, mines + k);
 		}
 	}
 	

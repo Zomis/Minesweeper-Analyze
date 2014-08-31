@@ -40,6 +40,7 @@ public class DetailAnalyze {
 		double totalCombinations = analyze.getTotal();
 		Map<GroupValues<T>, FieldProxy<T>> bufferedValues = new HashMap<GroupValues<T>, FieldProxy<T>>();
 		for (FieldProxy<T> proxy : proxies.values()) {
+			// Check if it is possible to re-use a previous value
 			FieldProxy<T> bufferedValue = bufferedValues.get(proxy.getNeighbors());
 			if (bufferedValue != null && bufferedValue.getFieldGroup() == proxy.getFieldGroup()) {
 				proxy.copyFromOther(bufferedValue, totalCombinations);
