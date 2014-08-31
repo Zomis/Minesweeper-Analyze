@@ -8,7 +8,12 @@ import net.zomis.minesweeper.analyze.FieldGroup;
 import net.zomis.minesweeper.analyze.GroupValues;
 import net.zomis.minesweeper.analyze.Solution;
 
-public class DetailAnalyze<T> {
+/**
+ * Creator of {@link DetailedResults} given an {@link AnalyzeResult} and a {@link NeighborFind} strategy
+ * 
+ * @author Simon Forsberg
+ */
+public class DetailAnalyze {
 	public static <T> DetailedResults<T> solveDetailed(AnalyzeResult<T> analyze, NeighborFind<T> neighborStrategy) {
 		// Initialize FieldProxies
 		final Map<T, FieldProxy<T>> proxies = new HashMap<T, FieldProxy<T>>();
