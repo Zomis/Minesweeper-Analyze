@@ -14,7 +14,7 @@ import net.zomis.minesweeper.analyze.AnalyzeResult;
  */
 public interface DetailedResults<T> {
 
-	Collection<FieldProxy<T>> getProxies();
+	Collection<ProbabilityKnowledge<T>> getProxies();
 
 	/**
 	 * Get the number of unique proxies that was required for the calculation. As some can be re-used, this will always be lesser than or equal to <code>getProxyMap().size()</code>
@@ -29,7 +29,7 @@ public interface DetailedResults<T> {
 	 * @param field
 	 * @return
 	 */
-	FieldProxy<T> getProxyFor(T field);
+	ProbabilityKnowledge<T> getProxyFor(T field);
 
 	/**
 	 * Get the underlying analyze that these detailed results was based on
@@ -41,6 +41,6 @@ public interface DetailedResults<T> {
 	/**
 	 * @return The map of all probability datas
 	 */
-	Map<T, FieldProxy<T>> getProxyMap();
+	Map<T, ProbabilityKnowledge<T>> getProxyMap();
 
 }
