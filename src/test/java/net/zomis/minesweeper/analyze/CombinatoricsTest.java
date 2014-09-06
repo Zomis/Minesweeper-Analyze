@@ -37,6 +37,29 @@ public class CombinatoricsTest {
 	}
 	
 	@Test
+	public void indexCombinations() {
+		int[] arr1356 = Combinatorics.zIndexCombinations(20, 4, 8);
+		assertArrayEquals(new int[]{ 1, 3, 5, 6 }, arr1356);
+		
+		int[] arr1234 = Combinatorics.zIndexCombinations( 1, 4, 8);
+		assertArrayEquals(new int[]{ 1, 2, 3, 4 }, arr1234);
+		
+		int[] arr1235 = Combinatorics.zIndexCombinations( 2, 4, 8);
+		assertArrayEquals(new int[]{ 1, 2, 3, 5 }, arr1235);
+		
+		for (int i = 1; i <= 35; i++) {
+			int[] arr = Combinatorics.zIndexCombinations(i, 3, 7);
+//			List<Integer> arr2 = Combinatorics.indexCombinations(i, 3, 7);
+//			int[] arr2asInt = new int[arr2.size()];
+//			for (int j = 0; j < arr2.size(); j++) {
+//				arr2asInt[j] = arr2.get(j);
+//			}
+			System.out.println(Arrays.toString(arr));
+//			assertArrayEquals(arr2asInt, arr);
+		}
+	}
+	
+	@Test
 	public void pickCombinationsFromList() {
 		List<FieldRule<Character>> rules = new LinkedList<FieldRule<Character>>();
 		rules.add(new FieldRule<Character>(null, Arrays.asList('a', 'b'), 1));
