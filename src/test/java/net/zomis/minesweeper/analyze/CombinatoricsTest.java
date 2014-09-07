@@ -1,7 +1,9 @@
 package net.zomis.minesweeper.analyze;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,25 +39,61 @@ public class CombinatoricsTest {
 	}
 	
 	@Test
-	public void indexCombinations() {
-		int[] arr1356 = Combinatorics.zIndexCombinations(20, 4, 8);
-		assertArrayEquals(new int[]{ 1, 3, 5, 6 }, arr1356);
+	public void specificCombinationVeryBig() {
+		int[] result = Combinatorics.specificCombination(256, 51, BigInteger.valueOf(Long.MAX_VALUE - 42));
+		assertArrayEquals(new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,26,27, 28, 29, 30, 31, 32, 33,
+				34, 35, 36, 37, 38, 52, 73, 94, 99, 132, 163, 169, 179, 190, 214, 227, 230 }, result);
+	}
+	
+	@Test
+	public void specificCombinations() {
+		assertArrayEquals(new int[]{ 0, 1, 2, 3 }, Combinatorics.specificCombination(8, 4, BigInteger.ONE));
+		assertArrayEquals(new int[]{ 0, 1, 2, 4 }, Combinatorics.specificCombination(8, 4, BigInteger.valueOf(2)));
+		assertArrayEquals(new int[]{ 0, 2, 4, 5 }, Combinatorics.specificCombination(8, 4, BigInteger.valueOf(20)));
 		
-		int[] arr1234 = Combinatorics.zIndexCombinations( 1, 4, 8);
-		assertArrayEquals(new int[]{ 1, 2, 3, 4 }, arr1234);
+		assertArrayEquals(new int[]{ 1, 4, 6 }, Combinatorics.specificCombination(7, 3, BigInteger.valueOf(24)));
+		assertArrayEquals(new int[]{ 1, 5, 6 }, Combinatorics.specificCombination(7, 3, BigInteger.valueOf(25)));
+		assertArrayEquals(new int[]{ }, Combinatorics.specificCombination(7, 0, BigInteger.ONE));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void specificCombinationOutOfRange() {
+		Combinatorics.specificCombination(7, 3, BigInteger.valueOf(36));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void specificCombinationZeroOrLess() {
+		Combinatorics.specificCombination(7, 3, BigInteger.ZERO);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void specificCombinationWithNegativeSize() {
+		Combinatorics.specificCombination(7, -1, BigInteger.ONE);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void specificCombinationWithTooBigSize() {
+		Combinatorics.specificCombination(7, 8, BigInteger.ONE);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void specificCombinationWithNegativeElements() {
+		Combinatorics.specificCombination(-1, 3, BigInteger.ONE);
+	}
+	
+	@Test
+	public void nCrBigInt() {
+		assertEquals(BigInteger.valueOf(28), Combinatorics.nCrBigInt(8, 2));
+		assertEquals(BigInteger.valueOf(28), Combinatorics.nCrBigInt(8, 6));
+		assertEquals(BigInteger.valueOf(70), Combinatorics.nCrBigInt(8, 4));
+		assertEquals(BigInteger.valueOf(56), Combinatorics.nCrBigInt(8, 3));
+		assertEquals(BigInteger.valueOf(35), Combinatorics.nCrBigInt(7, 3));
+		assertEquals(BigInteger.ZERO, Combinatorics.nCrBigInt(1, -1));
+		assertEquals(BigInteger.ZERO, Combinatorics.nCrBigInt(0, 1));
 		
-		int[] arr1235 = Combinatorics.zIndexCombinations( 2, 4, 8);
-		assertArrayEquals(new int[]{ 1, 2, 3, 5 }, arr1235);
-		
-		for (int i = 1; i <= 35; i++) {
-			int[] arr = Combinatorics.zIndexCombinations(i, 3, 7);
-//			List<Integer> arr2 = Combinatorics.indexCombinations(i, 3, 7);
-//			int[] arr2asInt = new int[arr2.size()];
-//			for (int j = 0; j < arr2.size(); j++) {
-//				arr2asInt[j] = arr2.get(j);
-//			}
-			System.out.println(Arrays.toString(arr));
-//			assertArrayEquals(arr2asInt, arr);
+		for (int i = 0; i < 100; i++) {
+			assertEquals(BigInteger.ONE, Combinatorics.nCrBigInt(i, 0));
+			assertEquals(BigInteger.ONE, Combinatorics.nCrBigInt(i, i));
 		}
 	}
 	
