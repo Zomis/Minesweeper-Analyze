@@ -142,19 +142,23 @@ public class Combinatorics {
 		BigInteger combination = combinationNumber;
 		int remainingSize = size;
 		int remainingElements = elements;
+		BigInteger ncr = nCrBigInt(remainingElements - 1, remainingSize - 1);
 		
 		while (remainingSize > 0) {
-			BigInteger ncr = nCrBigInt(remainingElements - 1, remainingSize - 1);
 			if (ncr.signum() == 0) {
 				throw new IllegalArgumentException("Combination out of range: " + combinationNumber + " with " + elements + " elements and size " + size);
 			}
 			if (combination.compareTo(ncr) <= 0) {
 				result[resultIndex] = nextNumber;
+				if (remainingElements > 1) {
+					ncr = ncr.multiply(BigInteger.valueOf(remainingSize - 1)).divide(BigInteger.valueOf(remainingElements - 1));
+				}
 				remainingSize--;
 				resultIndex++;
 			}
 			else {
 				combination = combination.subtract(ncr);
+				ncr = ncr.multiply(BigInteger.valueOf((remainingElements - 1) - (remainingSize - 1))).divide(BigInteger.valueOf(remainingElements - 1));
 			}
 			remainingElements--;
 			nextNumber++;

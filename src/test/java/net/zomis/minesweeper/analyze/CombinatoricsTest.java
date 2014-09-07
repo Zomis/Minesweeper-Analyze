@@ -1,7 +1,6 @@
 package net.zomis.minesweeper.analyze;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -54,6 +53,27 @@ public class CombinatoricsTest {
 		assertArrayEquals(new int[]{ 1, 4, 6 }, Combinatorics.specificCombination(7, 3, BigInteger.valueOf(24)));
 		assertArrayEquals(new int[]{ 1, 5, 6 }, Combinatorics.specificCombination(7, 3, BigInteger.valueOf(25)));
 		assertArrayEquals(new int[]{ }, Combinatorics.specificCombination(7, 0, BigInteger.ONE));
+	}
+	
+	@Test
+	public void alwaysIncreasingCombination() {
+		int n = 10;
+		int r = 5;
+		
+		long combinations = Combinatorics.nCrBigInt(n, r).longValueExact();
+		long value = 0;
+		for (long i = 1; i <= combinations; i++) {
+			int[] result = Combinatorics.specificCombination(n, r, BigInteger.valueOf(i));
+			System.out.println(Arrays.toString(result));
+			
+			String arrayValues = "";
+			for (int index = 0; index < result.length; index++) {
+				arrayValues = arrayValues + result[index];
+			}
+			long nextValue = Long.parseLong(arrayValues);
+			assertTrue(nextValue > value);
+			value = nextValue;
+		}
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
