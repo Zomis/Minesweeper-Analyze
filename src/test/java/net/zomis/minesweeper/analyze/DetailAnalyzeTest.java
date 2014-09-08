@@ -11,7 +11,7 @@ import org.junit.Test;
 public class DetailAnalyzeTest {
 
 	@Test
-	public void sf() {
+	public void detailedAnalyzeTest() {
 		String[] input = {
 				"___",// aaa   abc 
 				"_x_",// bcd   ded
@@ -26,11 +26,6 @@ public class DetailAnalyzeTest {
 		
 		assertEquals(6, detail.getProxyCount());
 		
-		for (ProbabilityKnowledge<CharPoint> ee : detail.getProxies()) {
-			System.out.println(ee);
-			System.out.println();
-		}
-		
 		ProbabilityKnowledge<CharPoint> field12 = detail.getProxyFor(analyze.getPoint(1, 2));
 		ProbabilityKnowledge<CharPoint> field20 = detail.getProxyFor(analyze.getPoint(2, 0));
 		ProbabilityKnowledge<CharPoint> field03 = detail.getProxyFor(analyze.getPoint(0, 3));
@@ -40,4 +35,33 @@ public class DetailAnalyzeTest {
 		
 	}
 	
+	@Test
+	public void detailed13Test() {
+		String[] input = {
+				"________", // aaaaaaaa   abbbbbba
+				"________", // aaaaaaaa   bcdefghb
+				"_____xx_", // aabddcaa   bijklmnb
+				"___13x__", // aab13caa   bop13qrb
+				"____x___", // aabddcaa   bijklmnb
+				"____xx__", // aaaaaaaa   bcdefghb
+				"________"  // aaaaaaaa   abbbbbba
+		};
+		General2DAnalyze analyze = new General2DAnalyze(input);
+		AnalyzeResult<CharPoint> results = analyze.solve();
+
+		for (Solution<CharPoint> ee : results.getSolutions()) {
+			System.out.println(ee);
+			System.out.println();
+		}
+		
+		DetailedResults<CharPoint> detail = results.analyzeDetailed(analyze);
+		
+		for (ProbabilityKnowledge<CharPoint> ee : detail.getProxies()) {
+			System.out.println(ee);
+			System.out.println();
+		}
+		assertEquals(18, detail.getProxyCount());
+		assertArrayEquals(detail.getProxyFor(analyze.getPoint(1, 1)).getProbabilities(), detail.getProxyFor(analyze.getPoint(1, 5)).getProbabilities(), 0.000001);
+		
+	}
 }
