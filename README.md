@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/Zomis/Minesweeper-Analyze.svg?branch=master)](https://travis-ci.org/Zomis/Minesweeper-Analyze?branch=master)
+
+
 Minesweeper Probabilities
 =========================
 
