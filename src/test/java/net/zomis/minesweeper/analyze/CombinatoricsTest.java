@@ -60,7 +60,7 @@ public class CombinatoricsTest {
 		int n = 10;
 		int r = 5;
 		
-		long combinations = Combinatorics.nCrBigInt(n, r).longValueExact();
+		long combinations = Combinatorics.nCrBigInt(n, r).longValue();
 		long value = 0;
 		for (long i = 1; i <= combinations; i++) {
 			int[] result = Combinatorics.specificCombination(n, r, BigInteger.valueOf(i));
