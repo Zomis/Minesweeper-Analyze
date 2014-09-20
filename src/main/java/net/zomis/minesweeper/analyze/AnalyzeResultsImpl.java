@@ -87,13 +87,13 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 		return theSolution.getRandomSolution(random);
 	}
 	
-	private RootAnalyzeImpl<T> solutionToNewAnalyze(Solution<T> solution, List<FieldRule<T>> extraRules) {
+	private AnalyzeFactory<T> solutionToNewAnalyze(Solution<T> solution, List<FieldRule<T>> extraRules) {
 		List<FieldRule<T>> newRules = new ArrayList<FieldRule<T>>();
 		for (FieldRule<T> rule : extraRules) { 
 			// Create new rules, because the older ones may have been simplified already.
 			newRules.add(new FieldRule<T>(rule));
 		}
-		RootAnalyzeImpl<T> newRoot = new RootAnalyzeImpl<T>(solution, newRules);
+		AnalyzeFactory<T> newRoot = new AnalyzeFactory<T>(solution, newRules);
 		return newRoot;
 	}
 	
@@ -101,7 +101,7 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 	public AnalyzeResult<T> cloneAddSolve(List<FieldRule<T>> extraRules) {
 		List<FieldRule<T>> newRules = this.getOriginalRules();
 		newRules.addAll(extraRules);
-		RootAnalyzeImpl<T> copy = new RootAnalyzeImpl<T>();
+		AnalyzeFactory<T> copy = new AnalyzeFactory<T>();
 		for (FieldRule<T> rule : newRules) {
 			copy.addRule(new FieldRule<T>(rule));
 		}

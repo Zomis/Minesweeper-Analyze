@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import net.zomis.minesweeper.analyze.FieldRule;
-import net.zomis.minesweeper.analyze.RootAnalyzeImpl;
+import net.zomis.minesweeper.analyze.AnalyzeFactory;
 import net.zomis.minesweeper.analyze.detail.NeighborFind;
 
-public abstract class AbstractAnalyze<F> extends RootAnalyzeImpl<F> implements NeighborFind<F> {
+public abstract class AbstractAnalyze<F> extends AnalyzeFactory<F> implements NeighborFind<F> {
 	
 	public AbstractAnalyze() {
 	}

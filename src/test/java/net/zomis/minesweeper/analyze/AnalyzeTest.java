@@ -16,7 +16,7 @@ public class AnalyzeTest {
 
 	@Test
 	public void ruleTest() {
-		RootAnalyzeImpl<String> root = new RootAnalyzeImpl<String>();
+		AnalyzeFactory<String> root = new AnalyzeFactory<String>();
 		FieldRule<String> ruleA = new FieldRule<String>("A", Arrays.asList("a", "b", "c", "d"), 4);
 		assertEquals("(a + b + c + d) = 4", ruleA.toString());
 		assertEquals("A", ruleA.getCause());
@@ -27,7 +27,7 @@ public class AnalyzeTest {
 	
 	@Test
 	public void aWholeLotOfConnectedThreesComplexMap() {
-		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
+		AnalyzeFactory<String> before = new AnalyzeFactory<String>();
 		List<String> openSea = addBoard(16, 16);
 		before.addRule(placeThreeAt(1, 1, openSea));
 		before.addRule(placeThreeAt(9, 1, openSea));
@@ -120,7 +120,7 @@ public class AnalyzeTest {
 //		a14c
 //		abbc
 //		dddd
-		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
+		AnalyzeFactory<String> before = new AnalyzeFactory<String>();
 		before.addRule(new FieldRule<String>("global", Arrays.asList("a", "b", "b", "c", "a", "c", "a", "b", "b", "c", "d", "d", "d", "d"), 6));
 		before.addRule(new FieldRule<String>("1", Arrays.asList("a", "b", "b", "a", "a", "b", "b"), 1));
 		before.addRule(new FieldRule<String>("4", Arrays.asList("b", "b", "c", "c", "b", "b", "c"), 4));
@@ -171,7 +171,7 @@ public class AnalyzeTest {
 		 * k+l+m+n = 3			4
 		 **/
 		
-		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
+		AnalyzeFactory<String> before = new AnalyzeFactory<String>();
 		before.addRule(new FieldRule<String>("global", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"), 6));
 		before.addRule(new FieldRule<String>("1", Arrays.asList("a", "b", "c", "e", "g", "h", "i"), 1));
 		before.addRule(new FieldRule<String>("3", Arrays.asList("b", "c", "d", "f", "h", "i", "j"), 3));
@@ -223,7 +223,7 @@ public class AnalyzeTest {
 	
 	@Test
 	public void rulesFromString() {
-		RootAnalyzeImpl<String> before = new RootAnalyzeImpl<String>();
+		AnalyzeFactory<String> before = new AnalyzeFactory<String>();
 		FieldRule<String> rule = new FieldRule<String>("global", fields("abc"), 1);
 		before.addRule(rule);
 		before.addRule(createRule("(b + c) = 1"));
