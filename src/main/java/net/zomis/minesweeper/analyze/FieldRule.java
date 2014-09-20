@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A constraint of a number of fields or {@link FieldGroup}s that should have a specific sum
@@ -132,7 +131,7 @@ public class FieldRule<T> {
 		return Combinatorics.nCr(this.getFieldsCountInGroups(), this.result);
 	}
 
-	public SimplifyResult simplify(Map<FieldGroup<T>, Integer> knownValues) {
+	public SimplifyResult simplify(GroupValues<T> knownValues) {
 		if (this.isEmpty()) {
 			return SimplifyResult.NO_EFFECT;
 		}
