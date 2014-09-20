@@ -12,8 +12,22 @@ import java.util.List;
 public class Combinatorics {
 	private Combinatorics() { }
 	
+	/**
+	 * Calculates the combinations for the hypergeometric probability distribution, that is, it does not divide by <code>N nCr n</code>.
+	 * <p>Example: There are 6 fields, 3 of them contains a mine. You have the possibility to take 2 of these at once.<br>
+	 * <code>NNKK(6, 3, 2, 0)</code> will return the <b>number of combinations</b> where 0 of the 2 you are taking contains a mine.</p>
+	 * 
+	 * @see <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">Hypergeometric Distribution on Wikipedia</a>
+	 * 
+	 * @param N All elements
+	 * @param n All elements containing what we are looking for
+	 * @param K How many elements are we looking in
+	 * @param k How many elements we are looking in that contains what we are looking for
+	 * @return The number of combinations of <code>k</code> interesting elements in <code>K</code> areas when there are <code>n</code> interesting elements in <code>N</code> areas.
+	 */
 	public static double NNKK(int N, int n, int K, int k) {
-		return nCr(K, k) * nCr(N - K, n - k); //	/ RootAnalyze.nCr(N, n)
+		return nCr(K, k) * nCr(N - K, n - k);
+		// Does not do the last part:	/ RootAnalyze.nCr(N, n)
 	}
 	
 	public static <T> List<T> listCombination(double combination, int size, List<T> elementList) {
@@ -89,6 +103,15 @@ public class Combinatorics {
 		return o;
 	}
 	
+	/**
+	 * Calculates the Binomial Coefficient
+	 * 
+	 * @see <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient on Wikipedia</a>
+	 * 
+	 * @param n number of elements you have
+	 * @param r number of elements you want to pick
+	 * @return number of combinations when you have <code>n</code> elements and want <code>r</code> of them
+	 */
 	public static double nCr(int n, int r) {
 		if (r > n || r < 0) {
 			return 0;
@@ -106,6 +129,15 @@ public class Combinatorics {
 		return value;
 	}
 
+	/**
+	 * Calculates the Binomial Coefficient
+	 * 
+	 * @see <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient on Wikipedia</a>
+	 * 
+	 * @param n number of elements you have
+	 * @param r number of elements you want to pick
+	 * @return number of combinations when you have <code>n</code> elements and want <code>r</code> of them
+	 */
 	public static BigInteger nCrBigInt(int n, int r) {
 		if (r > n || r < 0) {
 			return BigInteger.ZERO;
@@ -127,6 +159,20 @@ public class Combinatorics {
 		return value;
 	}
 
+	/**
+	 * You have x elements and want to pick a specific combination them which will contain y elements.
+	 * 
+	 * <p>For example, you have 5 elements and want 3 of them. There are 10 combinations for this. The exact combinations can be ordered as:
+	 * <code>012, 013, 014, 023, 024, 034, 123, 124, 134, 234</code>. Combination number 4 is then 023, 
+	 * so <code>specificCombination(5, 3, BigInteger.valueOf(4))</code> will return the array <code>{ 0, 2, 3 }</code></p>
+	 * 
+	 * @param elements number of elements you have
+	 * @param size number of elements you want to pick
+	 * @param combinationNumber the combination number you want to pick. <code>1 <= combinationNumber <= nCr(elements, size)</code>
+	 * @return the specific elements that you picked, each element is <code>0 <= value < elements</code>
+	 * @throws IllegalArgumentException if combinationNumber is out of range
+	 * @throws IllegalArgumentException if elements or size is negative
+	 */
 	public static int[] specificCombination(final int elements, final int size, final BigInteger combinationNumber) {
 		if (combinationNumber.signum() != 1) {
 			throw new IllegalArgumentException("Combination must be positive");
@@ -188,6 +234,20 @@ public class Combinatorics {
 		}
 	}
 	
+	/**
+	 * You have x elements and want to pick a specific combination them which will contain y elements.
+	 * 
+	 * <p>For example, you have 5 elements and want 3 of them. There are 10 combinations for this. The exact combinations can be ordered as:
+	 * <code>012, 013, 014, 023, 024, 034, 123, 124, 134, 234</code>. Combination number 4 is then 023, 
+	 * so <code>specificCombination(5, 3, 4)</code> will return the array <code>{ 0, 2, 3 }</code></p>
+	 * 
+	 * @param elements number of elements you have
+	 * @param size number of elements you want to pick
+	 * @param combinationNumber the combination number you want to pick. <code>1 <= combinationNumber <= nCr(elements, size)</code>
+	 * @return the specific elements that you picked, each element is <code>0 <= value < elements</code>
+	 * @throws IllegalArgumentException if combinationNumber is out of range
+	 * @throws IllegalArgumentException if elements or size is negative
+	 */
 	public static int[] specificCombination(int elements, int size, double combination) {
 		if (Math.floor(combination) != Math.ceil(combination)) {
 			throw new IllegalArgumentException("Combination must be a whole number");
