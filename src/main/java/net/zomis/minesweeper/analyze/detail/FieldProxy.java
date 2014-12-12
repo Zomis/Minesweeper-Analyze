@@ -1,7 +1,9 @@
 package net.zomis.minesweeper.analyze.detail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.zomis.minesweeper.analyze.Combinatorics;
@@ -32,7 +34,7 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	}
 	
 	void addSolution(Solution<T> solution) {
-		recursiveRemove(solution.copyWithoutNCRData(), 1, 0);
+		recursiveRemove(new ArrayList<Entry<FieldGroup<T>, Integer>>(solution.copyWithoutNCRData().getSetGroupValues().entrySet()), 1, 0, 0);
 	}
 	
 	/**
@@ -126,24 +128,21 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		return this.detailedProbabilities;
 	}
 
-	private void recursiveRemove(Solution<T> solution, double combinations, int mines) {
+	private void recursiveRemove(List<Entry<FieldGroup<T>, Integer>> solution, double combinations, int mines, int listIndex) {
 		if (Thread.interrupted()) {
     		throw new RuntimeTimeoutException();
 		}
 		
 		// Check if there are more field groups with values
-		GroupValues<T> remaining = solution.getSetGroupValues();
-		if (remaining.isEmpty()) {
+		if (listIndex >= solution.size()) {
 			// TODO: or if combinations equals zero ?
 			this.detailedCombinations[mines + this.found] += combinations;
 			return;
 		}
 		
-		// Get the first assignment
-		Entry<FieldGroup<T>, Integer> fieldGroupAssignment = remaining.entrySet().iterator().next();
+		// Get the assignment
+		Entry<FieldGroup<T>, Integer> fieldGroupAssignment = solution.get(listIndex);
 		FieldGroup<T> group = fieldGroupAssignment.getKey();
-		remaining.remove(group);
-		solution = Solution.createSolution(remaining);
 		
 		// Setup values for the hypergeometric distribution calculation. See http://en.wikipedia.org/wiki/Hypergeometric_distribution
 		int N = group.size();
@@ -155,7 +154,7 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		
 		if (K == null) {
 			// This field does not have any neighbors to that group.
-			recursiveRemove(solution, combinations * Combinatorics.nCr(N, n), mines);
+			recursiveRemove(solution, combinations * Combinatorics.nCr(N, n), mines, listIndex + 1);
 			return;
 		}
 		
@@ -163,7 +162,7 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		int maxLoop = Math.min(K, n);
 		for (int k = minK(N, K, n); k <= maxLoop; k++) {
 			double thisCombinations = Combinatorics.NNKK(N, n, K, k);
-			recursiveRemove(solution, combinations * thisCombinations, mines + k);
+			recursiveRemove(solution, combinations * thisCombinations, mines + k, listIndex + 1);
 		}
 	}
 	
