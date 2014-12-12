@@ -20,13 +20,11 @@ public class GroupValues<T> {
 
 	@Override
 	public int hashCode() {
-		if (bufferedHash != 0) {
-			return this.bufferedHash;
-		}
-		
-		int result = data.hashCode();
-		this.bufferedHash = result;
-		return result;
+	    if (bufferedHash == 0) {
+	        this.bufferedHash = data.hashCode();
+	    }
+
+	    return this.bufferedHash;
 	}
 	
 	@Override
