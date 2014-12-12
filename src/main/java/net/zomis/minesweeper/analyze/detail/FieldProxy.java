@@ -42,12 +42,7 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	 * @param analyzeTotal Total number of combinations
 	 */
 	void copyFromOther(FieldProxy<T> copyFrom, double analyzeTotal) {
-		for (int i = 0; i < this.detailedCombinations.length - this.found; i++) {
-			if (copyFrom.detailedCombinations.length <= i + copyFrom.found) {
-				break;
-			}
-			this.detailedCombinations[i + this.found] = copyFrom.detailedCombinations[i + copyFrom.found];
-		}
+		System.arraycopy(copyFrom.detailedCombinations, copyFrom.found, this.detailedCombinations, this.found, Math.min(this.detailedCombinations.length - this.found, copyFrom.detailedCombinations.length - copyFrom.found));
 		
 		this.finalCalculation(analyzeTotal);
 	}
