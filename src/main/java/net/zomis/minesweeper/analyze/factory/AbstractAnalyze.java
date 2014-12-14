@@ -91,4 +91,8 @@ public abstract class AbstractAnalyze<F> extends AnalyzeFactory<F> implements Ne
 		return isDiscoveredMine(field);
 	}
 	
+	public void createRules() {
+		createRules(getAllPoints());
+	}
+	
 }
