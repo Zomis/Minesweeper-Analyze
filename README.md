@@ -28,18 +28,18 @@ To also find the *detailed* probabilities:
 
 Add a repository definition like this in your pom:
 
-<repositories>
-    <repository>
-        <id>zomis</id>
-        <name>Zomis' Maven Repository</name>
-        <url>http://www.zomis.net/maven/</url>
-    </repository>
-</repositories>
+    <repositories>
+        <repository>
+            <id>zomis</id>
+            <name>Zomis' Maven Repository</name>
+            <url>http://www.zomis.net/maven/</url>
+        </repository>
+    </repositories>
 
 Add this dependency in your pom:
 
-<dependency>
-    <groupId>net.zomis</groupId>
-    <artifactId>mine-analyze</artifactId>
-    <version>1.0</version>
-</dependency>
+    <dependency>
+        <groupId>net.zomis</groupId>
+        <artifactId>mine-analyze</artifactId>
+        <version>1.0</version>
+    </dependency>
