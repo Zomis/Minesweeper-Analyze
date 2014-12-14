@@ -16,6 +16,14 @@
 			<url>ftp://www.zomis.net/public_html/maven</url>
 		</repository>
 	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>janos</id>
+			<name>Maven repo of Janos</name>
+			<url>http://maven.janosgyerik.com/</url>
+		</repository>
+	</repositories>
 	
 	<packaging>jar</packaging>
 	<build>
@@ -78,6 +86,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.janosgyerik</groupId>
+			<artifactId>microbench</artifactId>
+			<version>1.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
