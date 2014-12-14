@@ -24,10 +24,10 @@ public interface DetailedResults<T> {
 	int getProxyCount();
 
 	/**
-	 * Get a specific proxy for a field
+	 * Get the detailed probabilities for a field
 	 * 
-	 * @param field
-	 * @return
+	 * @param field The field to get the information for
+	 * @return An object containing detailed probability information for the chosen field
 	 */
 	ProbabilityKnowledge<T> getProxyFor(T field);
 

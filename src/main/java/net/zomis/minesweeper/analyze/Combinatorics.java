@@ -168,8 +168,8 @@ public class Combinatorics {
 	 * 
 	 * @param elements number of elements you have
 	 * @param size number of elements you want to pick
-	 * @param combinationNumber the combination number you want to pick. <code>1 <= combinationNumber <= nCr(elements, size)</code>
-	 * @return the specific elements that you picked, each element is <code>0 <= value < elements</code>
+	 * @param combinationNumber the combination number you want to pick. <code>1 &lt;= combinationNumber &lt;= nCr(elements, size)</code>
+	 * @return the specific elements that you picked, each element is <code>0 &lt;= value &lt; elements</code>
 	 * @throws IllegalArgumentException if combinationNumber is out of range
 	 * @throws IllegalArgumentException if elements or size is negative
 	 */
@@ -243,8 +243,8 @@ public class Combinatorics {
 	 * 
 	 * @param elements number of elements you have
 	 * @param size number of elements you want to pick
-	 * @param combinationNumber the combination number you want to pick. <code>1 <= combinationNumber <= nCr(elements, size)</code>
-	 * @return the specific elements that you picked, each element is <code>0 <= value < elements</code>
+	 * @param combination the combination number you want to pick. <code>1 &lt;= combinationNumber &lt;= nCr(elements, size)</code>
+	 * @return the specific elements that you picked, each element is <code>0 &lt;= value &lt; elements</code>
 	 * @throws IllegalArgumentException if combinationNumber is out of range
 	 * @throws IllegalArgumentException if elements or size is negative
 	 */

@@ -12,7 +12,7 @@ import java.util.Random;
  * Represents a solution for a Minesweeper analyze. This has the {@link FieldGroup}s 
  * 
  * @author Simon Forsberg
- * @param <T>
+ * @param <T> The field type
  */
 public class Solution<T> {
 	public static <T> Solution<T> createSolution(GroupValues<T> values) {
