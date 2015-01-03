@@ -48,9 +48,13 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 	public double nCr() {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public boolean isEmpty() {
+		return fields.isEmpty() && minResult >= 0;
+	}
 
 	@Override
-	@Deprecated
 	public SimplifyResult simplify(GroupValues<T> knownValues) {
 		if (this.isEmpty()) {
 			return SimplifyResult.NO_EFFECT;
@@ -65,6 +69,8 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			if (known != null) {
 				it.remove();
 				result -= known;
+				minResult -= known;
+				maxResult -= known;
 			}
 			else totalCount += group.size();
 		}
