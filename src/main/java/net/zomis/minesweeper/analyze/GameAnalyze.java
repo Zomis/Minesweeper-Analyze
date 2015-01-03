@@ -66,7 +66,7 @@ public class GameAnalyze<T> {
 		if (this.rules.isEmpty())
 			return 0;
 		
-		FieldGroup<T> chosenGroup = this.rules.get(0).getSmallestFieldGroup();
+		FieldGroup<T> chosenGroup = getSmallestFieldGroup();
 		if (chosenGroup == null) {
 			throw new IllegalStateException("Chosen group is null.");
 		}
@@ -88,6 +88,16 @@ public class GameAnalyze<T> {
 			total += new GameAnalyze<T>(mapCopy, rulesCopy, this.callback).solve(solutions);
 		}
 		return total;
+	}
+
+	private FieldGroup<T> getSmallestFieldGroup() {
+		for (FieldRule<T> rule : rules) {
+			FieldGroup<T> smallest = rule.getSmallestFieldGroup();
+			if (smallest != null) {
+				return smallest;
+			}
+		}
+		return null;
 	}
 	
 }
