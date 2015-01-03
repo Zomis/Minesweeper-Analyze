@@ -46,7 +46,7 @@ public class NQueens {
 		assertEquals(92, solutions.getTotal(), 0.001);
 	}
 
-	private AnalyzeFactory<Integer> createQueens(int size) {
+	public static AnalyzeFactory<Integer> createQueens(int size) {
 		AnalyzeFactory<Integer> analyze = new AnalyzeFactory<Integer>();
 		
 		for (int x = 0; x < size; x++) {
@@ -79,7 +79,7 @@ public class NQueens {
 		return analyze;
 	}
 
-	private Collection<Integer> createDiagonal(int x, int y, int size, int offsetX, int offsetY) {
+	private static Collection<Integer> createDiagonal(int x, int y, int size, int offsetX, int offsetY) {
 		List<Integer> fields = new ArrayList<Integer>();
 		while (x < size && y < size && x >= 0 && y >= 0) {
 			fields.add(pos(x, y, size));
@@ -89,7 +89,7 @@ public class NQueens {
 		return fields;
 	}
 
-	private Integer pos(int x, int y, int size) {
+	private static Integer pos(int x, int y, int size) {
 		return y * size + x;
 	}
 	
