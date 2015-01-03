@@ -14,8 +14,8 @@ import java.util.List;
 public class FieldRule<T> {
 	
 	private final T cause;
-	private final List<FieldGroup<T>> fields;
-	private int result = 0;
+	protected final List<FieldGroup<T>> fields;
+	protected int result = 0;
 	
 	/**
 	 * Create a copy of an existing rule.
