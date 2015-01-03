@@ -11,7 +11,7 @@ import java.util.List;
  * @author Simon Forsberg
  * @param <T> Field type
  */
-public class FieldRule<T> {
+public class FieldRule<T> implements RuleConstraint<T> {
 	
 	private final T cause;
 	protected final List<FieldGroup<T>> fields;
@@ -22,10 +22,15 @@ public class FieldRule<T> {
 	 * 
 	 * @param copyFrom Rule to copy
 	 */
-	public FieldRule(FieldRule<T> copyFrom) {
+	private FieldRule(FieldRule<T> copyFrom) {
 		this.fields = new ArrayList<FieldGroup<T>>(copyFrom.fields); // Deep copy? Probably not. FieldGroup don't change much.
 		this.result = copyFrom.result;
 		this.cause = copyFrom.cause;
+	}
+	
+	protected FieldRule(T cause, List<FieldGroup<T>> fields) {
+		this.cause = cause;
+		this.fields = new ArrayList<FieldGroup<T>>(fields);
 	}
 	
 	/**
@@ -121,7 +126,7 @@ public class FieldRule<T> {
 		return result;
 	}
 	
-	public boolean isEmpty () {
+	public boolean isEmpty() {
 		return fields.isEmpty() && result == 0;
 	}
 
@@ -131,6 +136,7 @@ public class FieldRule<T> {
 		return Combinatorics.nCr(this.getFieldsCountInGroups(), this.result);
 	}
 
+	@Override
 	public SimplifyResult simplify(GroupValues<T> knownValues) {
 		if (this.isEmpty()) {
 			return SimplifyResult.NO_EFFECT;
@@ -198,5 +204,10 @@ public class FieldRule<T> {
 		rule.append(" = ");
 		rule.append(result);
 		return rule.toString(); 
+	}
+
+	@Override
+	public FieldRule<T> copy() {
+		return new FieldRule<T>(this);
 	}
 }

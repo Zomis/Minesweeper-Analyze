@@ -37,12 +37,12 @@ public class AnalyzeFactory<T> {
 	public AnalyzeResult<T> solve() {
 		List<FieldRule<T>> original = new ArrayList<FieldRule<T>>(this.rules.size());
 		for (FieldRule<T> rule : this.rules) {
-			original.add(new FieldRule<T>(rule));
+			original.add(rule.copy());
 		}
 		
 		List<FieldRule<T>> inProgress = new ArrayList<FieldRule<T>>(this.rules.size());
 		for (FieldRule<T> rule : this.rules) {
-			inProgress.add(new FieldRule<T>(rule));
+			inProgress.add(rule.copy());
 		}
 		
 		final List<Solution<T>> solutions = new ArrayList<Solution<T>>();

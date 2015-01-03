@@ -82,7 +82,7 @@ public class GameAnalyze<T> {
 			
 			List<FieldRule<T>> rulesCopy = new ArrayList<FieldRule<T>>(); // deep copy!
 			for (FieldRule<T> rule : this.rules) {
-				rulesCopy.add(new FieldRule<T>(rule));
+				rulesCopy.add(rule.copy());
 			}
 
 			total += new GameAnalyze<T>(mapCopy, rulesCopy, this.callback).solve(solutions);

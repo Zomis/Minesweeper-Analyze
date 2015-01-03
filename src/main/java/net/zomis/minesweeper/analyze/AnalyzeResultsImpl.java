@@ -91,7 +91,7 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 		List<FieldRule<T>> newRules = new ArrayList<FieldRule<T>>();
 		for (FieldRule<T> rule : extraRules) { 
 			// Create new rules, because the older ones may have been simplified already.
-			newRules.add(new FieldRule<T>(rule));
+			newRules.add(rule.copy());
 		}
 		AnalyzeFactory<T> newRoot = new AnalyzeFactory<T>(solution, newRules);
 		return newRoot;
@@ -103,7 +103,7 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 		newRules.addAll(extraRules);
 		AnalyzeFactory<T> copy = new AnalyzeFactory<T>();
 		for (FieldRule<T> rule : newRules) {
-			copy.addRule(new FieldRule<T>(rule));
+			copy.addRule(rule.copy());
 		}
 		return copy.solve();
 	}

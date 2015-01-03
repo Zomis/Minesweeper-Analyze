@@ -19,8 +19,10 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 	 * 
 	 * @param copyFrom Rule to copy
 	 */
-	public BoundedFieldRule(BoundedFieldRule<T> copyFrom) {
-		super(copyFrom);
+	private BoundedFieldRule(BoundedFieldRule<T> copyFrom) {
+		super(copyFrom.getCause(), copyFrom.fields);
+		this.minResult = copyFrom.minResult;
+		this.maxResult = copyFrom.maxResult;
 	}
 	
 	/**
@@ -121,5 +123,10 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 		rule.append(" <= x <= ");
 		rule.append(maxResult);
 		return rule.toString(); 
+	}
+	
+	@Override
+	public FieldRule<T> copy() {
+		return new BoundedFieldRule<T>(this);
 	}
 }
