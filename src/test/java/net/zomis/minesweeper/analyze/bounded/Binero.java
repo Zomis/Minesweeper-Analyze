@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,14 +56,19 @@ public class Binero {
 	}
 	
 	private static void setupBinero(AnalyzeFactory<Integer> fact, int size) {
+		List<List<Integer>> cols = new ArrayList<List<Integer>>();
+		List<List<Integer>> rows = new ArrayList<List<Integer>>();
 		for (int x = 0; x < size; x++) {
 			fact.addRule(new FieldRule<Integer>(null, createDiagonal(0, x, size, 1, 0), size / 2));
 			fact.addRule(new FieldRule<Integer>(null, createDiagonal(x, 0, size, 0, 1), size / 2));
+			cols.add(createDiagonal(x, 0, size, 0, 1));
+			rows.add(createDiagonal(0, x, size, 1, 0));
 			
 			sliding(fact, 0, x, size, 1, 0, 3);
 			sliding(fact, x, 0, size, 0, 1, 3);
 		}
-		
+		fact.addRule(new UniqueSequence<Integer>(0, cols));
+		fact.addRule(new UniqueSequence<Integer>(0, rows));
 	}
 
 	private static void sliding(AnalyzeFactory<Integer> puzzle, int x, int y, int size, int offsetX, int offsetY, int count) {
@@ -80,7 +84,7 @@ public class Binero {
 		}
 	}
 
-	private static Collection<Integer> createDiagonal(int x, int y, int size, int offsetX, int offsetY) {
+	private static List<Integer> createDiagonal(int x, int y, int size, int offsetX, int offsetY) {
 		List<Integer> fields = new ArrayList<Integer>();
 		while (x < size && y < size && x >= 0 && y >= 0) {
 			fields.add(pos(x, y, size));
