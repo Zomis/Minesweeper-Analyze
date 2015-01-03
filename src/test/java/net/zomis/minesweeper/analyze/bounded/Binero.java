@@ -100,6 +100,16 @@ public class Binero {
 		}
 	}
 	
+	@Test
+	public void veryHard() throws Exception {
+		AnalyzeFactory<Integer> puzzle = binero(getClass().getResourceAsStream("veryhard"));
+		AnalyzeResult<Integer> solved = puzzle.solve();
+		System.out.println(solved.getTotal());
+		for (Solution<Integer> ee : solved.getSolutions()) {
+			System.out.println(ee);
+		}
+	}
+	
 	private static Integer pos(int x, int y, int size) {
 		return y * size + x;
 	}
