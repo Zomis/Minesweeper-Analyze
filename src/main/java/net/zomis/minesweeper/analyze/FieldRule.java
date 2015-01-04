@@ -120,12 +120,17 @@ public class FieldRule<T> implements RuleConstraint<T> {
 	}
 	
 	public FieldGroup<T> getSmallestFieldGroup() {
-		if (this.fields.isEmpty())
+		if (this.fields.isEmpty()) {
 			return null;
+		}
 		
 		FieldGroup<T> result = this.fields.get(0);
 		for (FieldGroup<T> group : this.fields) {
-			if (group.size() < result.size()) {
+			int size = group.size();
+			if (size == 1) {
+				return group;
+			}
+			if (size < result.size()) {
 				result = group;
 			}
 		}
