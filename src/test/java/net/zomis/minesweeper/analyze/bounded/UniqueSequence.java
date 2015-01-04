@@ -34,10 +34,10 @@ public class UniqueSequence<T> extends FieldRule<T> {
 	@Override
 	public SimplifyResult simplify(GroupValues<T> knownValues) {
 		// TODO: Listener for when something is added to knownValues? To be able to detect directly if rule is still OK or not. Likely speed-up.
-		List<Set<Integer>> setValues = new ArrayList<Set<Integer>>();
+		Set<Set<Integer>> setValues = new HashSet<Set<Integer>>();
 		for (List<T> row : list) {
-			if (!addSet(setValues, row, knownValues)) {
-				System.out.println("fail");
+			SimplifyResult result = addSet(setValues, row, knownValues);
+			if (result.isFailure()) {
 				return SimplifyResult.FAILED_TOO_BIG_RESULT;
 			}
 		}
@@ -60,7 +60,7 @@ public class UniqueSequence<T> extends FieldRule<T> {
 		return new UniqueSequence<T>(getCause(), list);
 	}
 
-	private boolean addSet(List<Set<Integer>> setValues, List<T> row, GroupValues<T> knownValues) {
+	private SimplifyResult addSet(Set<Set<Integer>> setValues, List<T> row, GroupValues<T> knownValues) {
 		
 		// loop through row, for each check if it has a value of 1 in the `knownValues`,
 		// convert the *index*es of the positions to a Set and add to setValues
@@ -71,13 +71,14 @@ public class UniqueSequence<T> extends FieldRule<T> {
 			T pos = it.next();
 			Integer setValue = getSetValue(pos, knownValues);
 			if (setValue == null) {
-				return true;
+				return SimplifyResult.NO_EFFECT;
 			}
 			if (setValue == 1) {
 				indexSet.add(index);
 			}
 		}
-		return setValues.add(indexSet);
+		boolean addOK = setValues.add(indexSet);
+		return addOK ? SimplifyResult.SIMPLIFIED : SimplifyResult.FAILED_NEGATIVE_RESULT;
 	}
 
 	private Integer getSetValue(T pos, GroupValues<T> knownValues) {
