@@ -50,13 +50,13 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 	}
 	
 	@Override
-	public boolean isEmpty(GroupValues<T> knownValues) {
+	public boolean isEmpty() {
 		return fields.isEmpty() && minResult >= 0;
 	}
 
 	@Override
 	public SimplifyResult simplify(GroupValues<T> knownValues) {
-		if (this.isEmpty(knownValues)) {
+		if (this.isEmpty()) {
 			return SimplifyResult.NO_EFFECT;
 		}
 		

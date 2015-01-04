@@ -126,7 +126,7 @@ public class FieldRule<T> implements RuleConstraint<T> {
 		return result;
 	}
 	
-	public boolean isEmpty(GroupValues<T> knownValues) {
+	public boolean isEmpty() {
 		return fields.isEmpty() && result == 0;
 	}
 
@@ -138,7 +138,7 @@ public class FieldRule<T> implements RuleConstraint<T> {
 
 	@Override
 	public SimplifyResult simplify(GroupValues<T> knownValues) {
-		if (this.isEmpty(knownValues)) {
+		if (this.isEmpty()) {
 			return SimplifyResult.NO_EFFECT;
 		}
 		

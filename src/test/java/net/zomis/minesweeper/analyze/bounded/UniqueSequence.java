@@ -22,7 +22,7 @@ public class UniqueSequence<T> extends FieldRule<T> {
 	}
 	
 	@Override
-	public boolean isEmpty(GroupValues<T> knownValues) {
+	public boolean isEmpty() {
 		return list.isEmpty();
 	}
 	

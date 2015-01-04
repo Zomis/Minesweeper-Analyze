@@ -20,7 +20,7 @@ public class GameAnalyze<T> {
 	private void removeEmptyRules() {
 		Iterator<FieldRule<T>> it = rules.iterator();
 		while (it.hasNext()) {
-			if (it.next().isEmpty(knownValues))
+			if (it.next().isEmpty())
 				it.remove();
 		}
 	}
