@@ -12,6 +12,7 @@ import java.util.List;
 import net.zomis.minesweeper.analyze.AnalyzeFactory;
 import net.zomis.minesweeper.analyze.AnalyzeResult;
 import net.zomis.minesweeper.analyze.BoundedFieldRule;
+import net.zomis.minesweeper.analyze.FieldGroup;
 import net.zomis.minesweeper.analyze.FieldRule;
 import net.zomis.minesweeper.analyze.Solution;
 
@@ -125,6 +126,21 @@ public class Binero {
 		for (Solution<Integer> ee : solved.getSolutions()) {
 			System.out.println(ee);
 		}
+		int[][] fields = new int[size][size];
+		for (FieldGroup<Integer> group : solved.getGroups()) {
+			int i = (int) group.getProbability();
+			fields[group.get(0) % size][group.get(0) / size] = i;
+		}
+		
+		for (int y = 0; y < size; y++) {
+			for (int x = 0; x < size; x++) {
+				System.out.print(fields[x][y]);
+			}
+			System.out.println();
+		}
+		System.out.println("---");
+		
+		
 		assertEquals(1.0, solved.getTotal(), 0.001);
 	}
 	
