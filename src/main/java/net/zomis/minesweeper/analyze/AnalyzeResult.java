@@ -7,7 +7,7 @@ import net.zomis.minesweeper.analyze.detail.DetailedResults;
 import net.zomis.minesweeper.analyze.detail.NeighborFind;
 
 public interface AnalyzeResult<T> {
-	AnalyzeResult<T> cloneAddSolve(List<FieldRule<T>> extraRules);
+	AnalyzeResult<T> cloneAddSolve(List<RuleConstraint<T>> extraRules);
 	
 	List<T> getFields();
 	
@@ -15,11 +15,11 @@ public interface AnalyzeResult<T> {
 	
 	List<FieldGroup<T>> getGroups();
 	
-	List<FieldRule<T>> getOriginalRules();
+	List<RuleConstraint<T>> getOriginalRules();
 	
-	double getProbabilityOf(List<FieldRule<T>> extraRules);
+	double getProbabilityOf(List<RuleConstraint<T>> extraRules);
 	
-	List<FieldRule<T>> getRules();
+	List<RuleConstraint<T>> getRules();
 	
 	List<T> getSolution(double solution);
 

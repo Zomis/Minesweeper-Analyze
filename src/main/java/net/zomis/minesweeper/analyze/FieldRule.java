@@ -54,9 +54,15 @@ public class FieldRule<T> implements RuleConstraint<T> {
 		this.result = result;
 	}
 	
-	boolean checkIntersection(FieldRule<T> rule) {
-		if (rule == this)
+	@Override
+	public boolean checkIntersection(RuleConstraint<T> rule2) {
+		if (rule2 == this)
 			return false;
+		
+		if (!(rule2 instanceof FieldRule)) {
+			return false;
+		}
+		FieldRule<T> rule = (FieldRule<T>) rule2;
 		
 		List<FieldGroup<T>> fieldsCopy = new ArrayList<FieldGroup<T>>(fields);
 		List<FieldGroup<T>> ruleFieldsCopy = new ArrayList<FieldGroup<T>>(rule.fields);

@@ -38,11 +38,6 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 		this.maxResult = max;
 	}
 	
-	@Deprecated
-	BoundedFieldRule(T cause, FieldGroup<T> group, int result) {
-		super(cause, group, result);
-	}
-	
 	@Override
 	@Deprecated
 	public double nCr() {
@@ -85,15 +80,7 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			return SimplifyResult.FAILED_TOO_BIG_RESULT;
 		}
 		
-/*		// (a + b) = 1 or (a + b) = 0 would give a value to the (a + b) group and simplify things.
-		if (fields.size() == 1) {
-			knownValues.put(fields.get(0), result);
-			fields.clear();
-			result = 0;
-			return SimplifyResult.SIMPLIFIED;
-		}*/
-
-		// (a + b) + (c + d) = 0 would give the value 0 to all field groups and simplify things
+		// (a + b) + (c + d) <= 0 would give the value 0 to all field groups and simplify things
 		if (maxResult == 0) {
 			for (FieldGroup<T> field : fields) {
 				knownValues.put(field, 0);

@@ -29,7 +29,7 @@ public class RootAnalyzeImplTest {
 			"_x_"
 		});
 		AnalyzeResult<CharPoint> solution = analyze.solve();
-		List<FieldRule<CharPoint>> extraRules = new ArrayList<FieldRule<CharPoint>>();
+		List<RuleConstraint<CharPoint>> extraRules = new ArrayList<RuleConstraint<CharPoint>>();
 		extraRules.add(new FieldRule<CharPoint>(null, Arrays.asList(analyze.getPoint(0, 0), analyze.getPoint(1, 0)), 1));
 		assertEquals(0.25, solution.getProbabilityOf(extraRules), 0.0001);
 		assertFalse(false);

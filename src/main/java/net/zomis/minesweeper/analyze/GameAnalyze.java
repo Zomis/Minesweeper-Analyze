@@ -9,16 +9,16 @@ public class GameAnalyze<T> {
 	@Deprecated
 	private final SolvedCallback<T> callback;
 	private final GroupValues<T> knownValues;
-	private final List<FieldRule<T>> rules;
+	private final List<RuleConstraint<T>> rules;
 	
-	GameAnalyze(GroupValues<T> knownValues, List<FieldRule<T>> unsolvedRules, SolvedCallback<T> callback) {
+	GameAnalyze(GroupValues<T> knownValues, List<RuleConstraint<T>> unsolvedRules, SolvedCallback<T> callback) {
 		this.knownValues = knownValues == null ? new GroupValues<T>() : new GroupValues<T>(knownValues);
 		this.rules = unsolvedRules;
 		this.callback = callback;
 	}
 	
 	private void removeEmptyRules() {
-		Iterator<FieldRule<T>> it = rules.iterator();
+		Iterator<RuleConstraint<T>> it = rules.iterator();
 		while (it.hasNext()) {
 			if (it.next().isEmpty())
 				it.remove();
@@ -29,7 +29,7 @@ public class GameAnalyze<T> {
 		boolean simplifyPerformed = true;
 		while (simplifyPerformed) {
 			simplifyPerformed = false;
-			for (FieldRule<T> ruleSimplify : rules) {
+			for (RuleConstraint<T> ruleSimplify : rules) {
 				SimplifyResult simplifyResult = ruleSimplify.simplify(knownValues);
 				if (simplifyResult == SimplifyResult.SIMPLIFIED) {
 					simplifyPerformed = true;
@@ -80,8 +80,8 @@ public class GameAnalyze<T> {
 			GroupValues<T> mapCopy = new GroupValues<T>(this.knownValues);
 			mapCopy.put(chosenGroup, i);
 			
-			List<FieldRule<T>> rulesCopy = new ArrayList<FieldRule<T>>(); // deep copy!
-			for (FieldRule<T> rule : this.rules) {
+			List<RuleConstraint<T>> rulesCopy = new ArrayList<RuleConstraint<T>>(); // deep copy!
+			for (RuleConstraint<T> rule : this.rules) {
 				rulesCopy.add(rule.copy());
 			}
 
@@ -91,7 +91,7 @@ public class GameAnalyze<T> {
 	}
 
 	private FieldGroup<T> getSmallestFieldGroup() {
-		for (FieldRule<T> rule : rules) {
+		for (RuleConstraint<T> rule : rules) {
 			FieldGroup<T> smallest = rule.getSmallestFieldGroup();
 			if (smallest != null) {
 				return smallest;

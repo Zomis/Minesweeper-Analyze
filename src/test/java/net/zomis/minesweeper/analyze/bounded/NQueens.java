@@ -10,6 +10,7 @@ import net.zomis.minesweeper.analyze.AnalyzeFactory;
 import net.zomis.minesweeper.analyze.AnalyzeResult;
 import net.zomis.minesweeper.analyze.BoundedFieldRule;
 import net.zomis.minesweeper.analyze.FieldRule;
+import net.zomis.minesweeper.analyze.RuleConstraint;
 import net.zomis.minesweeper.analyze.Solution;
 
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class NQueens {
 	public void fourQueens() throws Exception {
 		AnalyzeFactory<Integer> queens = createQueens(4);
 		System.out.println(queens);
-		for (FieldRule<Integer> rule : queens.getRules()) {
+		for (RuleConstraint<Integer> rule : queens.getRules()) {
 			System.out.println(rule);
 		}
 		assertEquals(22, queens.getRules().size());

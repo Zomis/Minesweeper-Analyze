@@ -12,8 +12,8 @@ import net.zomis.minesweeper.analyze.detail.NeighborFind;
 
 public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 	private final List<FieldGroup<T>> groups;
-	private final List<FieldRule<T>> rules;
-	private final List<FieldRule<T>> originalRules;
+	private final List<RuleConstraint<T>> rules;
+	private final List<RuleConstraint<T>> originalRules;
 	private final List<Solution<T>> solutions;
 	
 	private double total;
@@ -23,8 +23,8 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 		return this.total;
 	}
 	
-	public AnalyzeResultsImpl(List<FieldRule<T>> original,
-			List<FieldRule<T>> rules, List<FieldGroup<T>> groups,
+	public AnalyzeResultsImpl(List<RuleConstraint<T>> original,
+			List<RuleConstraint<T>> rules, List<FieldGroup<T>> groups,
 			List<Solution<T>> solutions, double total) {
 		this.originalRules = original;
 		this.rules = rules;
@@ -40,8 +40,8 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 	 * @return List of simplified rules
 	 */
 	@Override
-	public List<FieldRule<T>> getRules() {
-		return new ArrayList<FieldRule<T>>(this.rules);
+	public List<RuleConstraint<T>> getRules() {
+		return new ArrayList<RuleConstraint<T>>(this.rules);
 	}
 	
 	@Override
@@ -87,9 +87,9 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 		return theSolution.getRandomSolution(random);
 	}
 	
-	private AnalyzeFactory<T> solutionToNewAnalyze(Solution<T> solution, List<FieldRule<T>> extraRules) {
-		List<FieldRule<T>> newRules = new ArrayList<FieldRule<T>>();
-		for (FieldRule<T> rule : extraRules) { 
+	private AnalyzeFactory<T> solutionToNewAnalyze(Solution<T> solution, List<RuleConstraint<T>> extraRules) {
+		List<RuleConstraint<T>> newRules = new ArrayList<RuleConstraint<T>>();
+		for (RuleConstraint<T> rule : extraRules) { 
 			// Create new rules, because the older ones may have been simplified already.
 			newRules.add(rule.copy());
 		}
@@ -98,11 +98,11 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 	}
 	
 	@Override
-	public AnalyzeResult<T> cloneAddSolve(List<FieldRule<T>> extraRules) {
-		List<FieldRule<T>> newRules = this.getOriginalRules();
+	public AnalyzeResult<T> cloneAddSolve(List<RuleConstraint<T>> extraRules) {
+		List<RuleConstraint<T>> newRules = this.getOriginalRules();
 		newRules.addAll(extraRules);
 		AnalyzeFactory<T> copy = new AnalyzeFactory<T>();
-		for (FieldRule<T> rule : newRules) {
+		for (RuleConstraint<T> rule : newRules) {
 			copy.addRule(rule.copy());
 		}
 		return copy.solve();
@@ -114,11 +114,11 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 	 * @return The original rule list  
 	 */
 	@Override
-	public List<FieldRule<T>> getOriginalRules() {
-		return this.originalRules.isEmpty() ? this.getRules() : new ArrayList<FieldRule<T>>(this.originalRules);
+	public List<RuleConstraint<T>> getOriginalRules() {
+		return this.originalRules.isEmpty() ? this.getRules() : new ArrayList<RuleConstraint<T>>(this.originalRules);
 	}
 
-	private double getTotalWith(List<FieldRule<T>> extraRules) {
+	private double getTotalWith(List<RuleConstraint<T>> extraRules) {
 		double total = 0;
 		
 		for (Solution<T> solution : this.getSolutions()) {
@@ -130,7 +130,7 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 	}
 	
 	@Override
-	public double getProbabilityOf(List<FieldRule<T>> extraRules) {
+	public double getProbabilityOf(List<RuleConstraint<T>> extraRules) {
 		return this.getTotalWith(extraRules) / this.getTotal();
 	}
 	
