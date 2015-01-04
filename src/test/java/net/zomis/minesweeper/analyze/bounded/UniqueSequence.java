@@ -23,15 +23,7 @@ public class UniqueSequence<T> extends FieldRule<T> {
 	
 	@Override
 	public boolean isEmpty(GroupValues<T> knownValues) {
-		for (List<T> i : list) {
-			for (T t : i) {
-				Integer value = getSetValue(t, knownValues);
-				if (value == null) {
-					return false;
-				}
-			}
-		}
-		return true;
+		return list.isEmpty();
 	}
 	
 	@Override
@@ -50,6 +42,16 @@ public class UniqueSequence<T> extends FieldRule<T> {
 			}
 		}
 		
+		for (List<T> i : list) {
+			for (T t : i) {
+				Integer value = getSetValue(t, knownValues);
+				if (value == null) {
+					return SimplifyResult.NO_EFFECT;
+				}
+			}
+		}
+		
+		list.clear();
 		return SimplifyResult.NO_EFFECT;
 	}
 	
