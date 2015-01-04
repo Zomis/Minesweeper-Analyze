@@ -17,6 +17,8 @@ import net.zomis.minesweeper.analyze.Solution;
 
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class Binero {
 	
 	static void readLine(AnalyzeFactory<Integer> puzzle, int y, String line) {
@@ -95,23 +97,35 @@ public class Binero {
 	}
 
 	@Test
-	public void hard() throws Exception {
-		AnalyzeFactory<Integer> puzzle = binero(getClass().getResourceAsStream("simple"));
-		AnalyzeResult<Integer> solved = puzzle.solve();
-		System.out.println(solved.getTotal());
-		for (Solution<Integer> ee : solved.getSolutions()) {
-			System.out.println(ee);
-		}
+	public void hard() {
+		solve("simple");
 	}
 	
 	@Test
-	public void veryHard() throws Exception {
-		AnalyzeFactory<Integer> puzzle = binero(getClass().getResourceAsStream("veryhard"));
+	public void veryHard() {
+		solve("veryhard");
+	}
+	
+	@Test
+	public void veryHard14() {
+		solve("veryhard14");
+	}
+	
+	private void solve(String string) {
+		AnalyzeFactory<Integer> puzzle;
+		try {
+			puzzle = binero(getClass().getResourceAsStream(string));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		AnalyzeResult<Integer> solved = puzzle.solve();
+		int size = (int) Math.sqrt(solved.getGroups().size());
+		System.out.println(string + " " + size + "x" + size);
 		System.out.println(solved.getTotal());
 		for (Solution<Integer> ee : solved.getSolutions()) {
 			System.out.println(ee);
 		}
+		assertEquals(1.0, solved.getTotal(), 0.001);
 	}
 	
 	private static Integer pos(int x, int y, int size) {
