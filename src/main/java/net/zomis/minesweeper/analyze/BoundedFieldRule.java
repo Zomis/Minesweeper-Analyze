@@ -45,9 +45,16 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 		this.maxResult = max;
 	}
 	
+	public BoundedFieldRule(T cause, List<FieldGroup<T>> fields, int min, int max) {
+		this.cause = cause;
+		this.fields = new ArrayList<FieldGroup<T>>(fields);
+		this.minResult = min;
+		this.maxResult = max;
+	}
+
 	@Override
 	public boolean isEmpty() {
-		return fields.isEmpty() && minResult >= 0;
+		return fields.isEmpty() && minResult <= 0 && maxResult >= 0;
 	}
 
 	@Override
@@ -78,6 +85,14 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 		// a + b > 2 is not a valid rule.
 		if (minResult > totalCount) {
 			return SimplifyResult.FAILED_TOO_BIG_RESULT;
+		}
+		
+		// (a + b) = 1 or (a + b) = 0 would give a value to the (a + b) group and simplify things.
+		if (fields.size() == 1 && minResult == maxResult) {
+			knownValues.put(fields.get(0), minResult);
+			fields.clear();
+			minResult = 0;
+			return SimplifyResult.SIMPLIFIED;
 		}
 		
 		// (a + b) + (c + d) <= 0 would give the value 0 to all field groups and simplify things
@@ -166,4 +181,12 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 		return cause;
 	}
 
+	public int getMinResult() {
+		return minResult;
+	}
+	
+	public int getMaxResult() {
+		return maxResult;
+	}
+	
 }
