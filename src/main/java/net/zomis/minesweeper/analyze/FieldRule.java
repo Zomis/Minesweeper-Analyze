@@ -55,50 +55,6 @@ public class FieldRule<T> implements RuleConstraint<T> {
 	}
 	
 	@Override
-	public boolean checkIntersection(RuleConstraint<T> rule2) {
-		if (rule2 == this)
-			return false;
-		
-		if (!(rule2 instanceof FieldRule)) {
-			return false;
-		}
-		FieldRule<T> rule = (FieldRule<T>) rule2;
-		
-		List<FieldGroup<T>> fieldsCopy = new ArrayList<FieldGroup<T>>(fields);
-		List<FieldGroup<T>> ruleFieldsCopy = new ArrayList<FieldGroup<T>>(rule.fields);
-		
-		for (FieldGroup<T> groupA : fieldsCopy) {
-			for (FieldGroup<T> groupB : ruleFieldsCopy) {
-				if (groupA == groupB) {
-					continue;
-				}
-				
-				FieldGroupSplit<T> splitResult = FieldGroupSplit.split(groupA, groupB);
-				if (splitResult == null) {
-					continue; // nothing to split
-				}
-				
-				FieldGroup<T> both = splitResult.getBoth();
-				FieldGroup<T> onlyA = splitResult.getOnlyA();
-				FieldGroup<T> onlyB = splitResult.getOnlyB();
-				
-				this.fields.remove(groupA);
-				this.fields.add(both);
-				if (!onlyA.isEmpty()) { 
-					this.fields.add(onlyA);
-				}
-				
-				rule.fields.remove(groupB);
-				rule.fields.add(both);
-				if (!onlyB.isEmpty()) { 
-					rule.fields.add(onlyB);
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public T getCause() {
 		return this.cause;
 	}
@@ -119,6 +75,7 @@ public class FieldRule<T> implements RuleConstraint<T> {
 		return this.result;
 	}
 	
+	@Override
 	public FieldGroup<T> getSmallestFieldGroup() {
 		if (this.fields.isEmpty()) {
 			return null;
@@ -137,6 +94,7 @@ public class FieldRule<T> implements RuleConstraint<T> {
 		return result;
 	}
 	
+	@Override
 	public boolean isEmpty() {
 		return fields.isEmpty() && result == 0;
 	}

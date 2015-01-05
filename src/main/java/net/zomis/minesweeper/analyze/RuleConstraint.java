@@ -6,11 +6,11 @@ public interface RuleConstraint<T> extends Iterable<List<FieldGroup<T>>> {
 
 	SimplifyResult simplify(GroupValues<T> knownValues);
 
-	FieldRule<T> copy();
+	RuleConstraint<T> copy();
 	
 	boolean isEmpty();
 
 	FieldGroup<T> getSmallestFieldGroup();
 
-	boolean checkIntersection(RuleConstraint<T> rule);
+	T getCause();
 }

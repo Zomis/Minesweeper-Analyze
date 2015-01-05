@@ -149,7 +149,7 @@ public class AnalyzeFactory<T> {
 	 * 
 	 * @param rule {@link FieldRule} to add
 	 */
-	public void addRule(FieldRule<T> rule) {
+	public void addRule(RuleConstraint<T> rule) {
 		this.rules.add(rule);
 	}
 	

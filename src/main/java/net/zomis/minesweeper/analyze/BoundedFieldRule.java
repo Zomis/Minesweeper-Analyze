@@ -1,7 +1,9 @@
 package net.zomis.minesweeper.analyze;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A constraint of a number of fields or {@link FieldGroup}s that should have a sum within a specific range
@@ -9,8 +11,10 @@ import java.util.Iterator;
  * @author Simon Forsberg
  * @param <T> Field type
  */
-public class BoundedFieldRule<T> extends FieldRule<T> {
+public class BoundedFieldRule<T> implements RuleConstraint<T> {
 	
+	private final T cause;
+	protected final List<FieldGroup<T>> fields;
 	protected int maxResult = 0;
 	protected int minResult = 0;
 	
@@ -20,7 +24,8 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 	 * @param copyFrom Rule to copy
 	 */
 	private BoundedFieldRule(BoundedFieldRule<T> copyFrom) {
-		super(copyFrom.getCause(), copyFrom.fields);
+		this.cause = copyFrom.cause;
+		this.fields = new ArrayList<FieldGroup<T>>(copyFrom.fields);
 		this.minResult = copyFrom.minResult;
 		this.maxResult = copyFrom.maxResult;
 	}
@@ -33,15 +38,11 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 	 * @param result The value that should be forced for the fields
 	 */
 	public BoundedFieldRule(T cause, Collection<T> rule, int min, int max) {
-		super(cause, rule, min);
+		this.cause = cause;
+		this.fields = new ArrayList<FieldGroup<T>>();
+		this.fields.add(new FieldGroup<T>(rule));
 		this.minResult = min;
 		this.maxResult = max;
-	}
-	
-	@Override
-	@Deprecated
-	public double nCr() {
-		throw new UnsupportedOperationException();
 	}
 	
 	@Override
@@ -63,7 +64,6 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			Integer known = knownValues.get(group);
 			if (known != null) {
 				it.remove();
-				result -= known;
 				minResult -= known;
 				maxResult -= known;
 			}
@@ -87,7 +87,6 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			}
 			SimplifyResult simplifyResult = fields.isEmpty() ? SimplifyResult.NO_EFFECT : SimplifyResult.SIMPLIFIED;
 			fields.clear();
-			result = 0;
 			minResult = 0;
 			maxResult = 0;
 			return simplifyResult;
@@ -100,7 +99,6 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			}
 			SimplifyResult simplifyResult = fields.isEmpty() ? SimplifyResult.NO_EFFECT : SimplifyResult.SIMPLIFIED;
 			fields.clear();
-			result = 0;
 			minResult = 0;
 			maxResult = 0;
 			return simplifyResult;
@@ -109,7 +107,6 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 		if (minResult <= 0 && maxResult >= totalCount) {
 			// Rule is effectively useless
 			fields.clear();
-			result = 0;
 			minResult = 0;
 			maxResult = 0;
 		}
@@ -136,7 +133,37 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 	}
 	
 	@Override
-	public FieldRule<T> copy() {
+	public BoundedFieldRule<T> copy() {
 		return new BoundedFieldRule<T>(this);
 	}
+
+	@Override
+	public Iterator<List<FieldGroup<T>>> iterator() {
+		return new IterateOnce<List<FieldGroup<T>>>(this.fields);
+	}
+
+	@Override
+	public FieldGroup<T> getSmallestFieldGroup() {
+		if (this.fields.isEmpty()) {
+			return null;
+		}
+		
+		FieldGroup<T> result = this.fields.get(0);
+		for (FieldGroup<T> group : this.fields) {
+			int size = group.size();
+			if (size == 1) {
+				return group;
+			}
+			if (size < result.size()) {
+				result = group;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public T getCause() {
+		return cause;
+	}
+
 }
