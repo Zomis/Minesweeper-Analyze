@@ -105,6 +105,15 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			maxResult = 0;
 			return simplifyResult;
 		}
+		
+		if (minResult <= 0 && maxResult >= totalCount) {
+			// Rule is effectively useless
+			fields.clear();
+			result = 0;
+			minResult = 0;
+			maxResult = 0;
+		}
+		
 		return SimplifyResult.NO_EFFECT;
 	}
 

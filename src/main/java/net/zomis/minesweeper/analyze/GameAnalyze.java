@@ -35,12 +35,12 @@ public class GameAnalyze<T> {
 				SimplifyResult simplifyResult = ruleSimplify.simplify(knownValues);
 				if (simplifyResult == SimplifyResult.SIMPLIFIED) {
 					simplifyPerformed = true;
-					if (ruleSimplify.isEmpty()) {
-						it.remove();
-					}
 				}
 				else if (simplifyResult.isFailure()) {
 					return false;
+				}
+				if (ruleSimplify.isEmpty()) {
+					it.remove();
 				}
 			}
 		}
