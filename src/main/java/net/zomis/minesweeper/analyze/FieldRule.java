@@ -221,4 +221,9 @@ public class FieldRule<T> implements RuleConstraint<T> {
 	public FieldRule<T> copy() {
 		return new FieldRule<T>(this);
 	}
+	
+	@Override
+	public Iterator<List<FieldGroup<T>>> iterator() {
+		return new IterateOnce<List<FieldGroup<T>>>(this.fields);
+	}
 }

@@ -17,6 +17,7 @@ import net.zomis.minesweeper.analyze.BoundedFieldRule;
 import net.zomis.minesweeper.analyze.FieldGroup;
 import net.zomis.minesweeper.analyze.FieldRule;
 import net.zomis.minesweeper.analyze.GroupValues;
+import net.zomis.minesweeper.analyze.SimplifyResult;
 import net.zomis.minesweeper.analyze.Solution;
 
 import org.junit.Test;
@@ -63,13 +64,18 @@ public class Binero {
 	}
 	
 	private static void setupBinero(AnalyzeFactory<Integer> fact, int size) {
-		List<List<Integer>> cols = new ArrayList<List<Integer>>();
-		List<List<Integer>> rows = new ArrayList<List<Integer>>();
+		List<List<FieldGroup<Integer>>> cols = new ArrayList<List<FieldGroup<Integer>>>();
+		List<List<FieldGroup<Integer>>> rows = new ArrayList<List<FieldGroup<Integer>>>();
 		for (int x = 0; x < size; x++) {
 			fact.addRule(new FieldRule<Integer>(null, createDiagonal(0, x, size, 1, 0), size / 2));
 			fact.addRule(new FieldRule<Integer>(null, createDiagonal(x, 0, size, 0, 1), size / 2));
-			cols.add(createDiagonal(x, 0, size, 0, 1));
-			rows.add(createDiagonal(0, x, size, 1, 0));
+			List<FieldGroup<Integer>> col = new ArrayList<FieldGroup<Integer>>();
+			col.add(new FieldGroup<Integer>(createDiagonal(x, 0, size, 0, 1)));
+			cols.add(col); 
+			
+			List<FieldGroup<Integer>> row = new ArrayList<FieldGroup<Integer>>();
+			row.add(new FieldGroup<Integer>(createDiagonal(0, x, size, 1, 0)));
+			rows.add(row);
 			
 			sliding(fact, 0, x, size, 1, 0, 3);
 			sliding(fact, x, 0, size, 0, 1, 3);
@@ -101,6 +107,26 @@ public class Binero {
 		return fields;
 	}
 
+	@Test
+	public void uniqueSequence() {
+		FieldGroup<String> a = new FieldGroup<>(Arrays.asList("a"));
+		FieldGroup<String> b = new FieldGroup<>(Arrays.asList("b"));
+		FieldGroup<String> c = new FieldGroup<>(Arrays.asList("c"));
+		FieldGroup<String> d = new FieldGroup<>(Arrays.asList("d"));
+		List<List<FieldGroup<String>>> lists = new ArrayList<List<FieldGroup<String>>>();
+		lists.add(Arrays.asList(a, b));
+		lists.add(Arrays.asList(c, d));
+		
+		GroupValues<String> failValues = new GroupValues<String>();
+		failValues.put(a, 0);
+		failValues.put(b, 1);
+		failValues.put(c, 0);
+		failValues.put(d, 1);
+		UniqueSequence<String> sequence = new UniqueSequence<String>(null, lists);
+		assertEquals(SimplifyResult.FAILED_TOO_BIG_RESULT, sequence.simplify(failValues));
+		
+	}
+	
 	@Test
 	public void hard() {
 		solve("simple");

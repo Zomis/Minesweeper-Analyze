@@ -1,6 +1,8 @@
 package net.zomis.minesweeper.analyze;
 
-public interface RuleConstraint<T> {
+import java.util.List;
+
+public interface RuleConstraint<T> extends Iterable<List<FieldGroup<T>>> {
 
 	SimplifyResult simplify(GroupValues<T> knownValues);
 

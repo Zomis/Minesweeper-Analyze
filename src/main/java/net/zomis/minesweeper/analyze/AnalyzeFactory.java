@@ -77,7 +77,7 @@ public class AnalyzeFactory<T> {
 			splitPerformed = false;
 			for (RuleConstraint<T> a : rules) {
 				for (RuleConstraint<T> b : rules) {
-					boolean result = a.checkIntersection(b);
+					boolean result = checkIntersection(a, b);
 					
 					if (result) {
 						splitPerformed = true;
@@ -87,6 +87,56 @@ public class AnalyzeFactory<T> {
 		}
 	}
 	
+	public boolean checkIntersection(RuleConstraint<T> ruleA, RuleConstraint<T> ruleB) {
+		if (ruleA == ruleB)
+			return false;
+		
+		boolean result = false;
+		for (List<FieldGroup<T>> fieldsA : ruleA) {
+			for (List<FieldGroup<T>> fieldsB : ruleB) {
+				result = result | checkIntersection(fieldsA, fieldsB);
+			}
+		}
+		return result;
+	}
+	
+	
+	private boolean checkIntersection(List<FieldGroup<T>> fieldsA, List<FieldGroup<T>> fieldsB) {
+		List<FieldGroup<T>> fieldsCopy = new ArrayList<FieldGroup<T>>(fieldsA);
+		List<FieldGroup<T>> ruleFieldsCopy = new ArrayList<FieldGroup<T>>(fieldsB);
+		
+		for (FieldGroup<T> groupA : fieldsCopy) {
+			for (FieldGroup<T> groupB : ruleFieldsCopy) {
+				if (groupA == groupB) {
+					continue;
+				}
+				
+				FieldGroupSplit<T> splitResult = FieldGroupSplit.split(groupA, groupB);
+				if (splitResult == null) {
+					continue; // nothing to split
+				}
+				
+				FieldGroup<T> both = splitResult.getBoth();
+				FieldGroup<T> onlyA = splitResult.getOnlyA();
+				FieldGroup<T> onlyB = splitResult.getOnlyB();
+				
+				fieldsA.remove(groupA);
+				fieldsA.add(both);
+				if (!onlyA.isEmpty()) { 
+					fieldsA.add(onlyA);
+				}
+				
+				fieldsB.remove(groupB);
+				fieldsB.add(both);
+				if (!onlyB.isEmpty()) { 
+					fieldsB.add(onlyB);
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Split the current field rules that has been added to this object
 	 */
