@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.zomis.minesweeper.analyze.AnalyzeFactory;
 import net.zomis.minesweeper.analyze.AnalyzeResult;
 import net.zomis.minesweeper.analyze.BoundedFieldRule;
 import net.zomis.minesweeper.analyze.FieldGroup;
 import net.zomis.minesweeper.analyze.FieldRule;
+import net.zomis.minesweeper.analyze.GroupValues;
 import net.zomis.minesweeper.analyze.Solution;
 
 import org.junit.Test;
@@ -51,10 +54,11 @@ public class Binero {
 		return size;
 	}
 	
-	public static AnalyzeFactory<Integer> binero(InputStream file) throws IOException {
+	public static AnalyzeFactory<Integer> binero(InputStream file, AtomicInteger size) throws IOException {
 		AnalyzeFactory<Integer> fact = new AnalyzeFactory<Integer>();
 		int length = readFromFile(file, fact);
 		setupBinero(fact, length);
+		size.set(length);
 		return fact;
 	}
 	
@@ -112,34 +116,51 @@ public class Binero {
 		solve("veryhard14");
 	}
 	
+	public static String map(GroupValues<Integer> values, int size) {
+		char[][] fields = new char[size][size];
+		for (Entry<FieldGroup<Integer>, Integer> group : values.entrySet()) {
+			Integer pos = group.getKey().get(0);
+			Integer value = group.getValue();
+			char ch = ' ';
+			if (value == 1) {
+				ch = '1';
+			}
+			else if (value == 0) {
+				ch = '0';
+			}
+			fields[pos % size][pos / size] = ch;
+		}
+		
+		StringBuilder str = new StringBuilder();
+		for (int y = 0; y < size; y++) {
+			for (int x = 0; x < size; x++) {
+				if (fields[x][y] == 0) {
+					str.append(' ');
+				}
+				else str.append(fields[x][y]);
+			}
+			str.append("\n");
+		}
+		return str.toString();
+	}
+	
 	private void solve(String string) {
 		AnalyzeFactory<Integer> puzzle;
+		AtomicInteger sizev = new AtomicInteger();
 		try {
-			puzzle = binero(getClass().getResourceAsStream(string));
+			puzzle = binero(getClass().getResourceAsStream(string), sizev);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		AnalyzeResult<Integer> solved = puzzle.solve();
-		int size = (int) Math.sqrt(solved.getGroups().size());
+		int size = sizev.get();
 		System.out.println(string + " " + size + "x" + size);
 		System.out.println(solved.getTotal());
 		for (Solution<Integer> ee : solved.getSolutions()) {
 			System.out.println(ee);
+			System.out.println(map(ee.getSetGroupValues(), size));
+			System.out.println("---");
 		}
-		int[][] fields = new int[size][size];
-		for (FieldGroup<Integer> group : solved.getGroups()) {
-			int i = (int) group.getProbability();
-			fields[group.get(0) % size][group.get(0) / size] = i;
-		}
-		
-		for (int y = 0; y < size; y++) {
-			for (int x = 0; x < size; x++) {
-				System.out.print(fields[x][y]);
-			}
-			System.out.println();
-		}
-		System.out.println("---");
-		
 		
 		assertEquals(1.0, solved.getTotal(), 0.001);
 	}
