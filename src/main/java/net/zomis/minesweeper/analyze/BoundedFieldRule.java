@@ -97,7 +97,12 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			for (FieldGroup<T> field : fields) {
 				knownValues.put(field, minResult * field.size() / totalCount);
 			}
-			return SimplifyResult.SIMPLIFIED;
+			SimplifyResult simplifyResult = fields.isEmpty() ? SimplifyResult.NO_EFFECT : SimplifyResult.SIMPLIFIED;
+			fields.clear();
+			result = 0;
+			minResult = 0;
+			maxResult = 0;
+			return simplifyResult;
 		}
 		return SimplifyResult.NO_EFFECT;
 	}
