@@ -85,11 +85,12 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 			for (FieldGroup<T> field : fields) {
 				knownValues.put(field, 0);
 			}
+			SimplifyResult simplifyResult = fields.isEmpty() ? SimplifyResult.NO_EFFECT : SimplifyResult.SIMPLIFIED;
 			fields.clear();
 			result = 0;
 			minResult = 0;
 			maxResult = 0;
-			return SimplifyResult.SIMPLIFIED;
+			return simplifyResult;
 		}
 		
 		// (a + b) + (c + d) = 4 would give the value {Group.SIZE} to all Groups.
