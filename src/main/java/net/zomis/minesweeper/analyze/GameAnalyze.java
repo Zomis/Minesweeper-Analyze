@@ -29,10 +29,15 @@ public class GameAnalyze<T> {
 		boolean simplifyPerformed = true;
 		while (simplifyPerformed) {
 			simplifyPerformed = false;
-			for (RuleConstraint<T> ruleSimplify : rules) {
+			Iterator<RuleConstraint<T>> it = rules.iterator();
+			while (it.hasNext()) {
+				RuleConstraint<T> ruleSimplify = it.next();
 				SimplifyResult simplifyResult = ruleSimplify.simplify(knownValues);
 				if (simplifyResult == SimplifyResult.SIMPLIFIED) {
 					simplifyPerformed = true;
+					if (ruleSimplify.isEmpty()) {
+						it.remove();
+					}
 				}
 				else if (simplifyResult.isFailure()) {
 					return false;
