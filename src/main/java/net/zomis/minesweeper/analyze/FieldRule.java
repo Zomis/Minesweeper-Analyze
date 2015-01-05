@@ -34,7 +34,7 @@ public class FieldRule<T> extends BoundedFieldRule<T> {
 	}
 	
 	FieldRule(T cause, FieldGroup<T> group, int result) {
-		super(cause, new ArrayList<>(), result, result);
+		super(cause, new ArrayList<T>(), result, result);
 		this.fields.add(group);
 	}
 	
