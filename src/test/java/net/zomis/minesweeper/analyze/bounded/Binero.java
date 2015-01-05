@@ -104,10 +104,10 @@ public class Binero {
 
 	@Test
 	public void uniqueSequence() {
-		FieldGroup<String> a = new FieldGroup<>(Arrays.asList("a"));
-		FieldGroup<String> b = new FieldGroup<>(Arrays.asList("b"));
-		FieldGroup<String> c = new FieldGroup<>(Arrays.asList("c"));
-		FieldGroup<String> d = new FieldGroup<>(Arrays.asList("d"));
+		FieldGroup<String> a = new FieldGroup<String>(Arrays.asList("a"));
+		FieldGroup<String> b = new FieldGroup<String>(Arrays.asList("b"));
+		FieldGroup<String> c = new FieldGroup<String>(Arrays.asList("c"));
+		FieldGroup<String> d = new FieldGroup<String>(Arrays.asList("d"));
 		List<List<String>> lists = new ArrayList<List<String>>();
 		lists.add(Arrays.asList("a", "b"));
 		lists.add(Arrays.asList("c", "d"));
