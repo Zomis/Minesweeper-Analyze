@@ -68,7 +68,7 @@ public class GameAnalyze<T> {
 		
 		FieldGroup<T> chosenGroup = getSmallestFieldGroup();
 		if (chosenGroup == null) {
-			throw new IllegalStateException("Chosen group is null.");
+			throw new IllegalStateException("Chosen group is null: " + this.rules);
 		}
 		int groupSize = chosenGroup.size();
 		
