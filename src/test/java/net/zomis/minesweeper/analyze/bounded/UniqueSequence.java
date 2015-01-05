@@ -43,13 +43,8 @@ public class UniqueSequence<T> extends FieldRule<T> {
 			}
 		}
 		
-		for (List<T> i : list) {
-			for (T t : i) {
-				Integer value = getSetValue(t, knownValues);
-				if (value == null) {
-					return SimplifyResult.NO_EFFECT;
-				}
-			}
+		if (setValues.size() != list.size()) {
+			return SimplifyResult.NO_EFFECT;
 		}
 		
 		list.clear();
