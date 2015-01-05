@@ -105,15 +105,17 @@ public class BoundedFieldRule<T> extends FieldRule<T> {
 	@Override
 	public String toString() {
 		StringBuilder rule = new StringBuilder();
+		rule.append(minResult);
+		rule.append(" <= ");
+		boolean fieldAdded = false;
 		for (FieldGroup<T> field : this.fields) {
-			if (rule.length() > 0) {
+			if (fieldAdded) {
 				rule.append(" + ");
 			}
+			fieldAdded = true;
 			rule.append(field.toString());
 		}
-		rule.append(" --> ");
-		rule.append(minResult);
-		rule.append(" <= x <= ");
+		rule.append(" <= ");
 		rule.append(maxResult);
 		return rule.toString(); 
 	}
