@@ -153,8 +153,8 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 	}
 
 	@Override
-	public Iterator<List<FieldGroup<T>>> iterator() {
-		return new IterateOnce<List<FieldGroup<T>>>(this.fields);
+	public List<FieldGroup<T>> fieldGroups() {
+		return this.fields;
 	}
 
 	@Override

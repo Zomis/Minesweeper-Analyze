@@ -2,8 +2,6 @@ package net.zomis.minesweeper.analyze;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * A constraint of a number of fields or {@link FieldGroup}s that should have a specific sum
@@ -85,8 +83,4 @@ public class FieldRule<T> extends BoundedFieldRule<T> {
 		return new FieldRule<T>(this);
 	}
 	
-	@Override
-	public Iterator<List<FieldGroup<T>>> iterator() {
-		return new IterateOnce<List<FieldGroup<T>>>(this.fields);
-	}
 }

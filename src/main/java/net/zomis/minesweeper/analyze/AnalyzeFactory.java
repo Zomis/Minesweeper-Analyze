@@ -87,23 +87,15 @@ public class AnalyzeFactory<T> {
 		}
 	}
 	
-	public boolean checkIntersection(RuleConstraint<T> ruleA, RuleConstraint<T> ruleB) {
-		if (ruleA == ruleB)
+	private boolean checkIntersection(RuleConstraint<T> ruleA, RuleConstraint<T> ruleB) {
+		if (ruleA == ruleB) {
 			return false;
-		
-		boolean result = false;
-		for (List<FieldGroup<T>> fieldsA : ruleA) {
-			for (List<FieldGroup<T>> fieldsB : ruleB) {
-				result = result | checkIntersection(fieldsA, fieldsB);
-			}
 		}
-		return result;
-	}
-	
-	
-	private boolean checkIntersection(List<FieldGroup<T>> fieldsA, List<FieldGroup<T>> fieldsB) {
-		List<FieldGroup<T>> fieldsCopy = new ArrayList<FieldGroup<T>>(fieldsA);
-		List<FieldGroup<T>> ruleFieldsCopy = new ArrayList<FieldGroup<T>>(fieldsB);
+		
+		List<FieldGroup<T>> fieldsA = ruleA.fieldGroups();
+		List<FieldGroup<T>> fieldsB = ruleB.fieldGroups();
+		List<FieldGroup<T>> fieldsCopy = new ArrayList<FieldGroup<T>>(ruleA.fieldGroups());
+		List<FieldGroup<T>> ruleFieldsCopy = new ArrayList<FieldGroup<T>>(ruleB.fieldGroups());
 		
 		for (FieldGroup<T> groupA : fieldsCopy) {
 			for (FieldGroup<T> groupB : ruleFieldsCopy) {
