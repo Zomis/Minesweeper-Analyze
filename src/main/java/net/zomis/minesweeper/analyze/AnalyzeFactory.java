@@ -77,11 +77,7 @@ public class AnalyzeFactory<T> {
 			splitPerformed = false;
 			for (RuleConstraint<T> a : rules) {
 				for (RuleConstraint<T> b : rules) {
-					boolean result = checkIntersection(a, b);
-					
-					if (result) {
-						splitPerformed = true;
-					}
+					splitPerformed |= checkIntersection(a, b);
 				}
 			}
 		}
