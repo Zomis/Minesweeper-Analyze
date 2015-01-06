@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.zomis</groupId>
 	<artifactId>mine-analyze</artifactId>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>Minesweeper Analyze</name>
-	<description>Fast analyze of probabilities in minesweeper</description>
+	<description>Fast analyze of probabilities in Minesweeper and other Constraint Satisfaction Problems</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
