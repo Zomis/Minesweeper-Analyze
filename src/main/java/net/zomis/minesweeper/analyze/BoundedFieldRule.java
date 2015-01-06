@@ -90,9 +90,7 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 		// (a + b) = 1 or (a + b) = 0 would give a value to the (a + b) group and simplify things.
 		if (fields.size() == 1 && minResult == maxResult) {
 			knownValues.put(fields.get(0), minResult);
-			fields.clear();
-			minResult = 0;
-			return SimplifyResult.SIMPLIFIED;
+			return clearRule();
 		}
 		
 		// (a + b) + (c + d) <= 0 would give the value 0 to all field groups and simplify things
@@ -100,11 +98,7 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 			for (FieldGroup<T> field : fields) {
 				knownValues.put(field, 0);
 			}
-			SimplifyResult simplifyResult = fields.isEmpty() ? SimplifyResult.NO_EFFECT : SimplifyResult.SIMPLIFIED;
-			fields.clear();
-			minResult = 0;
-			maxResult = 0;
-			return simplifyResult;
+			return clearRule();
 		}
 		
 		// (a + b) + (c + d) = 4 would give the value {Group.SIZE} to all Groups.
@@ -112,21 +106,23 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 			for (FieldGroup<T> field : fields) {
 				knownValues.put(field, minResult * field.size() / totalCount);
 			}
-			SimplifyResult simplifyResult = fields.isEmpty() ? SimplifyResult.NO_EFFECT : SimplifyResult.SIMPLIFIED;
-			fields.clear();
-			minResult = 0;
-			maxResult = 0;
-			return simplifyResult;
+			return clearRule();
 		}
 		
 		if (minResult <= 0 && maxResult >= totalCount) {
 			// Rule is effectively useless
-			fields.clear();
-			minResult = 0;
-			maxResult = 0;
+			clearRule();
 		}
 		
 		return SimplifyResult.NO_EFFECT;
+	}
+
+	private SimplifyResult clearRule() {
+		SimplifyResult simplifyResult = fields.isEmpty() ? SimplifyResult.NO_EFFECT : SimplifyResult.SIMPLIFIED;
+		fields.clear();
+		minResult = 0;
+		maxResult = 0;
+		return simplifyResult;
 	}
 
 	@Override
