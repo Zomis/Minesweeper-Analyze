@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/Zomis/Minesweeper-Analyze.svg?branch=master)](https://travis-ci.org/Zomis/Minesweeper-Analyze?branch=master)
 
-[![Code Review](http://www.zomis.net/codereview/shield/?qid=54737)](http://codereview.stackexchange.com/q/54737/31562)
+[![Code Review](http://www.zomis.net/codereview/shield/?qid=54737&dummy)](http://codereview.stackexchange.com/q/54737/31562)
 
-[![Code Review](http://www.zomis.net/codereview/shield/?qid=62383)](http://codereview.stackexchange.com/q/62383/31562)
+[![Code Review](http://www.zomis.net/codereview/shield/?qid=62383&dummy)](http://codereview.stackexchange.com/q/62383/31562)
 
 # Minesweeper Analyze
 
