@@ -69,4 +69,9 @@ public class GroupValues<T> {
 		data.remove(group);
 	}
 
+	@Override
+	public String toString() {
+		return data.toString();
+	}
+	
 }
