@@ -1,5 +1,7 @@
 package net.zomis.minesweeper.analyze;
 
+import net.zomis.minesweeper.analyze.listener.RuleListener;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -35,7 +37,8 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 	 * 
 	 * @param cause The reason for why this rule is added (optional, may be null)
 	 * @param rule Fields that this rule applies to
-	 * @param result The value that should be forced for the fields
+	 * @param min The minimum value that should be forced for the fields
+	 * @param max The maximum value that should be forced for the fields
 	 */
 	public BoundedFieldRule(T cause, Collection<T> rule, int min, int max) {
 		this.cause = cause;
@@ -57,8 +60,8 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 		return fields.isEmpty() && minResult <= 0 && maxResult >= 0;
 	}
 
-	@Override
-	public SimplifyResult simplify(GroupValues<T> knownValues) {
+    @Override
+    public SimplifyResult simplify(GroupValues<T> knownValues, RuleListener<T> listener) {
 		if (this.isEmpty()) {
 			return SimplifyResult.NO_EFFECT;
 		}
@@ -90,13 +93,15 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 		// (a + b) = 1 or (a + b) = 0 would give a value to the (a + b) group and simplify things.
 		if (fields.size() == 1 && minResult == maxResult) {
 			knownValues.put(fields.get(0), minResult);
+			listener.onValueSet(fields.get(0), minResult);
 			return clearRule();
 		}
 		
-		// (a + b) + (c + d) <= 0 would give the value 0 to all field groups and simplify things
+		// (a + b) + (c + d) == 0 would give the value 0 to all field groups and simplify things
 		if (maxResult == 0) {
 			for (FieldGroup<T> field : fields) {
 				knownValues.put(field, 0);
+                listener.onValueSet(field, 0);
 			}
 			return clearRule();
 		}
@@ -104,7 +109,9 @@ public class BoundedFieldRule<T> implements RuleConstraint<T> {
 		// (a + b) + (c + d) = 4 would give the value {Group.SIZE} to all Groups.
 		if (totalCount == minResult) {
 			for (FieldGroup<T> field : fields) {
-				knownValues.put(field, minResult * field.size() / totalCount);
+                int value = minResult * field.size() / totalCount;
+				knownValues.put(field, value);
+                listener.onValueSet(field, value);
 			}
 			return clearRule();
 		}

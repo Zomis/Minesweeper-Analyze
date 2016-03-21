@@ -1,5 +1,7 @@
 package net.zomis.minesweeper.analyze;
 
+import net.zomis.minesweeper.analyze.listener.SolveListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -13,8 +15,9 @@ import java.util.Map.Entry;
  */
 public class AnalyzeFactory<T> {
 	private final List<RuleConstraint<T>> rules = new ArrayList<RuleConstraint<T>>();
-	
-	AnalyzeFactory(Solution<T> known, List<RuleConstraint<T>> rules) {
+    private SolveListener<T> listener;
+
+    AnalyzeFactory(Solution<T> known, List<RuleConstraint<T>> rules) {
 		for (Entry<FieldGroup<T>, Integer> sol : known.getSetGroupValues().entrySet()) {
 			this.rules.add(new FieldRule<T>(null, sol.getKey(), sol.getValue()));
 		}
@@ -46,8 +49,15 @@ public class AnalyzeFactory<T> {
 		final List<Solution<T>> solutions = new ArrayList<Solution<T>>();
 		
 		this.splitFieldRules(inProgress);
-		
-		double total = new GameAnalyze<T>(null, inProgress, null).solve(solutions);
+
+        SolveListener<T> solveListener = listener != null ? listener : new SolveListener<T>() {
+            @Override
+            public void onValueSet(GameAnalyze<T> copy, FieldGroup<T> group, int value) {
+                // no operation
+            }
+        };
+        GameAnalyze<T> analyze = new GameAnalyze<T>(null, inProgress, 0, solveListener);
+		double total = analyze.solve(solutions);
 		
 		for (Solution<T> solution : solutions) {
 			solution.setTotal(total);
@@ -137,11 +147,21 @@ public class AnalyzeFactory<T> {
 	 * 
 	 * @param rule {@link FieldRule} to add
 	 */
-	public void addRule(RuleConstraint<T> rule) {
+	public AnalyzeFactory<T> addRule(RuleConstraint<T> rule) {
 		this.rules.add(rule);
+		return this;
 	}
-	
-	/**
+
+    public AnalyzeFactory<T> setListener(SolveListener<T> listener) {
+        this.listener = listener;
+        return this;
+    }
+
+    public SolveListener<T> getListener() {
+        return listener;
+    }
+
+    /**
 	 * Get the rules that has been added to this analyze
 	 * 
 	 * @return List of {@link FieldRule}s that has been added

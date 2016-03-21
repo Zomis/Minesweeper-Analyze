@@ -1,5 +1,7 @@
 package net.zomis.minesweeper.analyze;
 
+import net.zomis.minesweeper.analyze.listener.RuleListener;
+
 import java.util.List;
 
 
@@ -8,9 +10,10 @@ public interface RuleConstraint<T> {
 	 * Apply various values to this rule to potentially simplify it and learn something new
 	 * 
 	 * @param knownValues Known values that can be removed and cleaned up from this rule to simplify it
+	 * @param listener
 	 * @return A {@link SimplifyResult} corresponding to how successful the simplification was
 	 */
-	SimplifyResult simplify(GroupValues<T> knownValues);
+	SimplifyResult simplify(GroupValues<T> knownValues, RuleListener<T> listener);
 
 	/**
 	 * Create a copy of this rule, for trial-and-error purposes
