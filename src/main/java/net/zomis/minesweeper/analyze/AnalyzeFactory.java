@@ -1,5 +1,6 @@
 package net.zomis.minesweeper.analyze;
 
+import net.zomis.minesweeper.analyze.listener.Analyze;
 import net.zomis.minesweeper.analyze.listener.SolveListener;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class AnalyzeFactory<T> {
 
         SolveListener<T> solveListener = listener != null ? listener : new SolveListener<T>() {
             @Override
-            public void onValueSet(GameAnalyze<T> copy, FieldGroup<T> group, int value) {
+            public void onValueSet(Analyze<T> analyze, FieldGroup<T> group, int value) {
                 // no operation
             }
         };
@@ -78,10 +79,11 @@ public class AnalyzeFactory<T> {
 	 * Separate fields into field groups. Example <code>a + b + c = 2</code> and <code>b + c + d = 1</code> becomes <code>(a) + (b + c) = 2</code> and <code>(b + c) + (d) = 1</code>. This method is called automatically when calling {@link #solve()}
 	 * @param rules List of rules to split
 	 */
-	public void splitFieldRules(List<RuleConstraint<T>> rules) {
-		if (rules.size() <= 1)
-			return;
-			
+	public static <T> void splitFieldRules(List<RuleConstraint<T>> rules) {
+		if (rules.size() <= 1) {
+            return;
+        }
+
 		boolean splitPerformed = true;
 		while (splitPerformed) {
 			splitPerformed = false;
@@ -93,7 +95,7 @@ public class AnalyzeFactory<T> {
 		}
 	}
 	
-	private boolean checkIntersection(RuleConstraint<T> ruleA, RuleConstraint<T> ruleB) {
+	private static <T> boolean checkIntersection(RuleConstraint<T> ruleA, RuleConstraint<T> ruleB) {
 		if (ruleA == ruleB) {
 			return false;
 		}

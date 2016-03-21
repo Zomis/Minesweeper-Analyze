@@ -1,5 +1,6 @@
 package net.zomis.minesweeper.analyze;
 
+import net.zomis.minesweeper.analyze.listener.Analyze;
 import net.zomis.minesweeper.analyze.listener.RuleListener;
 import net.zomis.minesweeper.analyze.listener.SolveListener;
 
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class GameAnalyze<T> {
+public class GameAnalyze<T> implements Analyze<T> {
 
 	private final GroupValues<T> knownValues;
 	private final List<RuleConstraint<T>> rules;
@@ -32,10 +33,27 @@ public class GameAnalyze<T> {
 	
 	private boolean simplifyRules() {
 		boolean simplifyPerformed = true;
+        final List<RuleConstraint<T>> addedRules = new ArrayList<RuleConstraint<T>>();
+        final Analyze<T> analyze = new Analyze<T>() {
+            @Override
+            public int getDepth() {
+                return GameAnalyze.this.getDepth();
+            }
+
+            @Override
+            public void addRule(RuleConstraint<T> rule) {
+                addedRules.add(rule);
+            }
+
+            @Override
+            public GroupValues<T> getKnownValues() {
+                return GameAnalyze.this.getKnownValues();
+            }
+        };
         RuleListener<T> ruleListener = new RuleListener<T>() {
             @Override
             public void onValueSet(FieldGroup<T> group, int value) {
-                listener.onValueSet(GameAnalyze.this, group, value);
+                listener.onValueSet(analyze, group, value);
             }
         };
         while (simplifyPerformed) {
@@ -54,6 +72,13 @@ public class GameAnalyze<T> {
 					it.remove();
 				}
 			}
+            if (!addedRules.isEmpty()) {
+                this.rules.addAll(addedRules);
+                // as rules have been added, we need to split into field groups again
+                AnalyzeFactory.splitFieldRules(this.rules);
+                addedRules.clear();
+                simplifyPerformed = true;
+            }
 		}
 		return true;
 	}
@@ -103,7 +128,13 @@ public class GameAnalyze<T> {
 			}
 
             GameAnalyze<T> copy = new GameAnalyze<T>(mapCopy, rulesCopy, depth + 1, this.listener);
+            int rulesCountBefore = copy.rules.size();
             listener.onValueSet(copy, chosenGroup, i);
+            int rulesCountAfter = copy.rules.size();
+            if (rulesCountBefore != rulesCountAfter) {
+                // onValueSet has added rules
+                AnalyzeFactory.splitFieldRules(copy.rules);
+            }
 			total += copy.solve(solutions);
 		}
 		return total;
@@ -125,6 +156,12 @@ public class GameAnalyze<T> {
         return depth;
     }
 
+    @Override
+    public GroupValues<T> getKnownValues() {
+        return new GroupValues<T>(this.knownValues);
+    }
+
+    @Override
     public void addRule(RuleConstraint<T> ruleConstraint) {
         this.rules.add(ruleConstraint);
     }
