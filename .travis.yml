@@ -4,3 +4,17 @@ jdk:
     - openjdk6
     - openjdk7
     - oraclejdk8
+
+sudo: false
+
+cache:
+    directories:
+    - $HOME/.gradle
+
+# Shell nop (install handled by gradle dependency management, no need to first assemble and then test)
+install: ":"
+
+before_script:
+    # Gradle daemon won't add any benefit since Travis builds are always from scratch
+    - export GRADLE_OPTS='-Dorg.gradle.daemon=false'
+    - chmod +x gradlew
