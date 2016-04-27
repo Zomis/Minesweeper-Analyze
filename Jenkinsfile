@@ -2,8 +2,8 @@
 
 stage 'Dev'
 node {
-    sh 'chmod +x gradlew'
     checkout scm
+    sh 'chmod +x gradlew'
     sh './gradlew install'
     // dir('target') {stash name: 'war', includes: 'x.war'}
 }
