@@ -26,6 +26,31 @@ public class AlberiTest {
         assertSolution(result, "10", "02", "23", "31");
     }
 
+    @Test
+    public void doubleTrees() {
+        String map =
+                "12223333\n" +
+                "11214343\n" +
+                "51114444\n" +
+                "55554444\n" +
+                "55554444\n" +
+                "56657777\n" +
+                "66667877\n" +
+                "88888888";
+        AnalyzeFactory<String> analyze = alberi(map, 2);
+        AnalyzeResult<String> result = analyze.solve();
+
+        for (FieldGroup<String> group : result.getGroups()) {
+            if (group.getProbability() > 0) {
+                System.out.println(group);
+            }
+        }
+
+        assertSolution(result, "45", "47", "04", "06", "51", "53",
+            "10", "12", "65", "67", "24", "26",
+            "71", "73", "30", "32");
+    }
+
     public static <T> void assertSolution(AnalyzeResult<T> result, T... trueFields) {
         Set<FieldGroup<T>> allGroups = new HashSet<FieldGroup<T>>(result.getGroups());
         Set<FieldGroup<T>> trueGroups = new HashSet<FieldGroup<T>>();
