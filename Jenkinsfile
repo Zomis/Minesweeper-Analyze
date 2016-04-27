@@ -3,7 +3,6 @@
 stage 'Dev'
 node {
     checkout scm
-    servers = load 'servers.groovy'
     sh './gradlew install'
     // dir('target') {stash name: 'war', includes: 'x.war'}
 }
