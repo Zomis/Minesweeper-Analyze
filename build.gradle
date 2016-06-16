@@ -9,12 +9,16 @@ description = "Minesweeper Analyze"
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
-
-
 repositories {
-        
-     maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "http://repo.maven.apache.org/maven2" }
 }
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
 }
+
+release {
+    versionPropertyFile = 'gradle.properties'
+}
+
+afterReleaseBuild.dependsOn uploadArchives
