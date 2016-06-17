@@ -1,6 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+plugins {
+    id 'net.researchgate.release' version '2.4.0'
+}
+
 group = 'net.zomis'
 version = '1.1-SNAPSHOT'
 
@@ -8,10 +12,6 @@ description = "Minesweeper Analyze"
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
-
-plugins {
-    id 'net.researchgate.release' version '2.4.0'
-}
 
 repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
