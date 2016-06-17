@@ -18,5 +18,7 @@ node {
     def nextVersion = buildParams['next_version']
     def branchName = buildParams['branch_name']
     stage name: 'Production', concurrency: 1
+    sh "git checkout master"
+    sh "git pull"
     sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$releaseVersion -Prelease.newVersion=$nextVersion"
 }
