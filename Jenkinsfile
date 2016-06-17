@@ -1,14 +1,12 @@
 node {
     stage 'Dev'
     checkout scm
-    sh 'chmod +x gradlew'
     sh './gradlew install'
 
     stage 'QA'
     sh './gradlew test'
 
     stage name: 'Staging', concurrency: 1
-    sh 'chmod +x gradlew'
     sh './gradlew uploadArchives'
 
     def buildParams = input parameters: [[$class: 'StringParameterDefinition', name: 'release_version', defaultValue: '0.0.0'], 
