@@ -1,9 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-
 plugins {
     id 'net.researchgate.release' version '2.4.0'
 }
+
+apply plugin: 'java'
+apply plugin: 'maven'
 
 group = 'net.zomis'
 version = '1.1-SNAPSHOT'
