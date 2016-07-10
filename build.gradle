@@ -29,6 +29,11 @@ release {
     versionPropertyFile = 'gradle.properties'
 }
 
+jar {
+    from sourceSets.main.output
+    from sourceSets.main.allSource
+}
+
 def getMavenSettingsCredentials() {
     String userHome = System.getProperty('user.home')
     File mavenSettings = new File(userHome, '.m2/settings.xml')
