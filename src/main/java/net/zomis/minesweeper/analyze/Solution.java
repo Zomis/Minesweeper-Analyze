@@ -86,11 +86,11 @@ public class Solution<T> {
 		List<T> result = new ArrayList<T>();
 		
 		for (Entry<FieldGroup<T>, Integer> ee : this.setGroupValues.entrySet()) {
-			List<T> group = new ArrayList<T>(ee.getKey());
-			Collections.shuffle(group, random);
-			
+			List<T> pickable = new ArrayList<T>(ee.getKey());
+
 			for (int i = 0; i < ee.getValue(); i++) {
-				result.add(group.remove(0));
+                int nextPick = random.nextInt(pickable.size());
+				result.add(pickable.remove(nextPick));
 			}
 		}
 		
