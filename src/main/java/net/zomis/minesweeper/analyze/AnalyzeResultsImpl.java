@@ -93,7 +93,7 @@ public class AnalyzeResultsImpl<T> implements AnalyzeResult<T> {
 			// Create new rules, because the older ones may have been simplified already.
 			newRules.add(rule.copy());
 		}
-		AnalyzeFactory<T> newRoot = new AnalyzeFactory<T>(solution, newRules);
+		AnalyzeFactory<T> newRoot = new AnalyzeFactory<T>(new NoInterrupt(), solution, newRules);
 		return newRoot;
 	}
 	

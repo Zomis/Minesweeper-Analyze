@@ -14,9 +14,11 @@ public class GameAnalyze<T> implements Analyze<T> {
 	private final List<RuleConstraint<T>> rules;
 	private final int depth;
     private final SolveListener<T> listener;
+    private final InterruptCheck interruptCheck;
 
-    GameAnalyze(GroupValues<T> knownValues, List<RuleConstraint<T>> unsolvedRules,
+    GameAnalyze(InterruptCheck interruptCheck, GroupValues<T> knownValues, List<RuleConstraint<T>> unsolvedRules,
                 int depth, SolveListener<T> listener) {
+        this.interruptCheck = interruptCheck;
 		this.knownValues = knownValues == null ? new GroupValues<T>() : new GroupValues<T>(knownValues);
 		this.rules = unsolvedRules;
         this.depth = depth;
@@ -100,7 +102,7 @@ public class GameAnalyze<T> implements Analyze<T> {
 	}
 	
 	private double solveRules(List<Solution<T>> solutions) {
-		if (Thread.interrupted()) {
+		if (interruptCheck.isInterrupted()) {
     		throw new RuntimeTimeoutException();
 		}
 		
@@ -127,7 +129,7 @@ public class GameAnalyze<T> implements Analyze<T> {
 				rulesCopy.add(rule.copy());
 			}
 
-            GameAnalyze<T> copy = new GameAnalyze<T>(mapCopy, rulesCopy, depth + 1, this.listener);
+            GameAnalyze<T> copy = new GameAnalyze<T>(interruptCheck, mapCopy, rulesCopy, depth + 1, this.listener);
             int rulesCountBefore = copy.rules.size();
             listener.onValueSet(copy, chosenGroup, i);
             int rulesCountAfter = copy.rules.size();
