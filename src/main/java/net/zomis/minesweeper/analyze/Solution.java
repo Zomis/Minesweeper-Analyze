@@ -82,6 +82,7 @@ public class Solution<T> {
 		return this.nCrValue / this.mapTotal;
 	}
 	
+    @Deprecated
 	public List<T> getRandomSolution(Random random) {
 		List<T> result = new ArrayList<T>();
 		
