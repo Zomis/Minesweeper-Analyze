@@ -1,22 +1,32 @@
 node {
-    stage 'Dev'
+    properties([
+        disableConcurrentBuilds(),
+        parameters([
+            booleanParam(defaultValue: false, description: 'Clean', name: 'Clean'),
+            string(defaultValue: '', description: 'Release version', name: 'ReleaseVersion'),
+            string(defaultValue: '', description: 'Next version', name: 'NextVersion')
+        ])
+    ])
+
+    if (params.Clean) {
+        step([$class: 'WsCleanup'])
+    }
+
     checkout scm
-    sh 'chmod +x gradlew'
-    sh './gradlew install'
+    stage('Build') {
+        sh 'chmod +x gradlew'
+        sh './gradlew install'
+    }
 
-    stage 'QA'
-    sh './gradlew test'
+    stage(name: 'Upload', concurrency: 1) {
+        sh 'chmod +x gradlew'
+        sh './gradlew uploadArchives'
+    }
 
-    stage name: 'Staging', concurrency: 1
-    sh 'chmod +x gradlew'
-    sh './gradlew uploadArchives'
+    if (params.ReleaseVersion != '' && params.NextVersion != '') {
+        stage(name: 'Release', concurrency: 1) {
+            sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$params.ReleaseVersion -Prelease.newVersion=$params.NextVersion"
+        }
+    }
 
-    def buildParams = input parameters: [[$class: 'StringParameterDefinition', name: 'release_version', defaultValue: '0.0.0'], 
-	[$class: 'StringParameterDefinition', name: 'next_version', defaultValue: '0.0.0-SNAPSHOT'],
-        [$class: 'StringParameterDefinition', name: 'branch_name', defaultValue: 'master']]
-    def releaseVersion = buildParams['release_version']
-    def nextVersion = buildParams['next_version']
-    def branchName = buildParams['branch_name']
-    stage name: 'Production', concurrency: 1
-    sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$releaseVersion -Prelease.newVersion=$nextVersion"
 }
