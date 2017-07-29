@@ -18,13 +18,13 @@ node {
         sh './gradlew install'
     }
 
-    stage(name: 'Upload', concurrency: 1) {
+    stage('Upload') {
         sh 'chmod +x gradlew'
         sh './gradlew uploadArchives'
     }
 
     if (params.ReleaseVersion != '' && params.NextVersion != '') {
-        stage(name: 'Release', concurrency: 1) {
+        stage('Release') {
             sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$params.ReleaseVersion -Prelease.newVersion=$params.NextVersion"
         }
     }
