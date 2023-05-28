@@ -82,15 +82,16 @@ public class Solution<T> {
 		return this.nCrValue / this.mapTotal;
 	}
 	
+    @Deprecated
 	public List<T> getRandomSolution(Random random) {
 		List<T> result = new ArrayList<T>();
 		
 		for (Entry<FieldGroup<T>, Integer> ee : this.setGroupValues.entrySet()) {
-			List<T> group = new ArrayList<T>(ee.getKey());
-			Collections.shuffle(group, random);
-			
+			List<T> pickable = new ArrayList<T>(ee.getKey());
+
 			for (int i = 0; i < ee.getValue(); i++) {
-				result.add(group.remove(0));
+                int nextPick = random.nextInt(pickable.size());
+				result.add(pickable.remove(nextPick));
 			}
 		}
 		

@@ -6,15 +6,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.zomis.minesweeper.analyze.Combinatorics;
-import net.zomis.minesweeper.analyze.FieldGroup;
-import net.zomis.minesweeper.analyze.GroupValues;
-import net.zomis.minesweeper.analyze.RuntimeTimeoutException;
-import net.zomis.minesweeper.analyze.Solution;
+import net.zomis.minesweeper.analyze.*;
 
 public class FieldProxy<T> implements ProbabilityKnowledge<T> {
-	
-	private static int minK(int N, int K, int n) {
+
+    private final InterruptCheck interruptCheck;
+
+    private static int minK(int N, int K, int n) {
 		// If all fields in group are neighbors to this field then all mines must be neighbors to this field as well
 		return (N == K) ? n : 0;
 	}
@@ -26,14 +24,24 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	private final FieldGroup<T> group;
 	private final GroupValues<T> neighbors;
 	
+    @Deprecated
 	public FieldProxy(FieldGroup<T> group, T field) {
+        this.interruptCheck = new NoInterrupt();
 		this.field = field;
 		this.neighbors = new GroupValues<T>();
 		this.group = group;
 		this.found = 0;
 	}
-	
-	void addSolution(Solution<T> solution) {
+
+    FieldProxy(InterruptCheck interruptCheck, FieldGroup<T> group, T field) {
+        this.interruptCheck = interruptCheck;
+        this.field = field;
+        this.neighbors = new GroupValues<T>();
+        this.group = group;
+        this.found = 0;
+    }
+
+    void addSolution(Solution<T> solution) {
 		recursiveRemove(new ArrayList<Entry<FieldGroup<T>, Integer>>(solution.copyWithoutNCRData().getSetGroupValues().entrySet()), 1, 0, 0);
 	}
 	
@@ -44,7 +52,9 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 	 * @param analyzeTotal Total number of combinations
 	 */
 	void copyFromOther(FieldProxy<T> copyFrom, double analyzeTotal) {
-		System.arraycopy(copyFrom.detailedCombinations, copyFrom.found, this.detailedCombinations, this.found, Math.min(this.detailedCombinations.length - this.found, copyFrom.detailedCombinations.length - copyFrom.found));
+		System.arraycopy(copyFrom.detailedCombinations, copyFrom.found, this.detailedCombinations, this.found,
+            Math.min(this.detailedCombinations.length - this.found,
+                copyFrom.detailedCombinations.length - copyFrom.found));
 		
 		this.finalCalculation(analyzeTotal);
 	}
@@ -128,8 +138,9 @@ public class FieldProxy<T> implements ProbabilityKnowledge<T> {
 		return this.detailedProbabilities;
 	}
 
-	private void recursiveRemove(List<Entry<FieldGroup<T>, Integer>> solution, double combinations, int mines, int listIndex) {
-		if (Thread.interrupted()) {
+	private void recursiveRemove(List<Entry<FieldGroup<T>, Integer>> solution, double combinations,
+         int mines, int listIndex) {
+		if (interruptCheck.isInterrupted()) {
     		throw new RuntimeTimeoutException();
 		}
 		

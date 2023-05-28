@@ -3,10 +3,7 @@ package net.zomis.minesweeper.analyze.detail;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.zomis.minesweeper.analyze.AnalyzeResult;
-import net.zomis.minesweeper.analyze.FieldGroup;
-import net.zomis.minesweeper.analyze.GroupValues;
-import net.zomis.minesweeper.analyze.Solution;
+import net.zomis.minesweeper.analyze.*;
 
 /**
  * Creator of {@link DetailedResults} given an {@link AnalyzeResult} and a {@link NeighborFind} strategy
@@ -14,12 +11,19 @@ import net.zomis.minesweeper.analyze.Solution;
  * @author Simon Forsberg
  */
 public class DetailAnalyze {
-	public static <T> DetailedResults<T> solveDetailed(AnalyzeResult<T> analyze, NeighborFind<T> neighborStrategy) {
+    @Deprecated
+    public static <T> DetailedResults<T> solveDetailed(AnalyzeResult<T> analyze, NeighborFind<T> neighborStrategy) {
+        return solveDetailed(new NoInterrupt(), analyze, neighborStrategy);
+    }
+
+	static <T> DetailedResults<T> solveDetailed(
+            InterruptCheck interruptCheck,
+            AnalyzeResult<T> analyze, NeighborFind<T> neighborStrategy) {
 		// Initialize FieldProxies
 		final Map<T, FieldProxy<T>> proxies = new HashMap<T, FieldProxy<T>>();
 		for (FieldGroup<T> group : analyze.getGroups()) {
 			for (T field : group) {
-				FieldProxy<T> proxy = new FieldProxy<T>(group, field);
+				FieldProxy<T> proxy = new FieldProxy<T>(interruptCheck, group, field);
 				proxies.put(field, proxy);
 			}
 		}

@@ -16,22 +16,32 @@ import java.util.Map.Entry;
  */
 public class AnalyzeFactory<T> {
 	private final List<RuleConstraint<T>> rules = new ArrayList<RuleConstraint<T>>();
+    private final InterruptCheck interruptCheck;
     private SolveListener<T> listener;
 
-    AnalyzeFactory(Solution<T> known, List<RuleConstraint<T>> rules) {
+    AnalyzeFactory(InterruptCheck interruptCheck, Solution<T> known, List<RuleConstraint<T>> rules) {
+        this.interruptCheck = interruptCheck;
 		for (Entry<FieldGroup<T>, Integer> sol : known.getSetGroupValues().entrySet()) {
 			this.rules.add(new FieldRule<T>(null, sol.getKey(), sol.getValue()));
 		}
 		this.rules.addAll(rules);
 	}
-	
-	/**
-	 * Create a new, empty analyze factory
-	 */
-	public AnalyzeFactory() {
-	}
-	
-	/**
+
+    /**
+     * Create a new, empty analyze factory
+     */
+    public AnalyzeFactory() {
+        this(new NoInterrupt());
+    }
+
+    /**
+     * Create a new, empty analyze factory using a specific Interrupt condition
+     */
+    public AnalyzeFactory(InterruptCheck interruptCheck) {
+        this.interruptCheck = interruptCheck;
+    }
+
+    /**
 	 * Solve this analyze
 	 * 
 	 * @return An {@link AnalyzeResult} object for the result of the analyze.
@@ -57,7 +67,7 @@ public class AnalyzeFactory<T> {
                 // no operation
             }
         };
-        GameAnalyze<T> analyze = new GameAnalyze<T>(null, inProgress, 0, solveListener);
+        GameAnalyze<T> analyze = new GameAnalyze<T>(interruptCheck, null, inProgress, 0, solveListener);
 		double total = analyze.solve(solutions);
 		
 		for (Solution<T> solution : solutions) {

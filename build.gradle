@@ -6,7 +6,6 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'net.zomis'
-version = '1.1-SNAPSHOT'
 
 description = "Minesweeper Analyze"
 
@@ -17,12 +16,58 @@ repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
 }
 
+configurations {
+    deployerJars
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
 }
 
 release {
     versionPropertyFile = 'gradle.properties'
+}
+
+jar {
+    from sourceSets.main.output
+    from sourceSets.main.allSource
+}
+
+def getMavenSettingsCredentials() {
+    String userHome = System.getProperty('user.home')
+    File mavenSettings = new File(userHome, '.m2/settings.xml')
+    if (!mavenSettings.exists()) {
+        return []
+    }
+    def xmlSlurper = new XmlSlurper()
+    def output = xmlSlurper.parse(mavenSettings)
+    return output."servers"."server"
+}
+
+def getCredentials() {
+    def entries = getMavenSettingsCredentials()
+    for (entry in entries) {
+        if (entry."id".text() == 'zomisnet') {
+            return [username: entry.username.text(), password: entry.password.text()]
+        }
+    }
+    return [username: 'invalid', password: 'invalid']
+}
+
+uploadArchives {
+    def creds = getCredentials()
+    if (!creds) {
+        return;
+    }
+    repositories {
+        mavenDeployer {
+            configuration = configurations.deployerJars
+            repository(url: "ftp://www.zomis.net/public_html/maven") {
+                authentication(userName: creds["username"], password: creds["password"])
+            }
+        }
+    }
 }
 
 afterReleaseBuild.dependsOn uploadArchives

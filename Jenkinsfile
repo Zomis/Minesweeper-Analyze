@@ -27,6 +27,9 @@ node {
         stage('Release') {
             sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$params.ReleaseVersion -Prelease.newVersion=$params.NextVersion"
         }
+    } else {
+        stage('Release') {
+            sh './gradlew uploadArchives'
+        }
     }
-
 }
